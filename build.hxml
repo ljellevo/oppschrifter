@@ -1,0 +1,4 @@
+-lib VIGE
+-cp src
+--js bin/homepage.js
+--main Main

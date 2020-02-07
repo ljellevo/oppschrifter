@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "scripts": {
+    "start": "nodemon ./server/server.js & live-server ./bin/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "server/server.js",
+  "license": "MIT",
+  "dependencies": {
+    "json-server": "^0.15.0",
+    "swig-templates": "^2.0.3",
+    "mongodb": "^3.4.1",
+    "live-server": "^1.2.1",
+    "ws": "^7.2.1",
+    "nodemon": "^1.19.1",
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "cors": "^2.8.5",
+    "body-parser": "^1.19.0",
+    "consolidate": "^0.15.1"
+  },
+  "name": "Oppskrifter",
+  "author": "Ludvig Ellevold",
+  "description": "A website with a collection of recipies",
+  "bin": {
+    "name": "homepage.js"
+  }
+}
