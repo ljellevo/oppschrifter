@@ -30,17 +30,14 @@ class RegisterPage extends DynamicComponent {
     var req = new Http( "http://localhost:3000/api/register");
 
     if(usernameInputController.getValue() == "") {
-      //Print message
       return;
     }
 
     if(passwordInputController.getValue() == "") {
-      //Meessage
       return;
     }
 
     if(passwordInputController.getValue() != retypePasswordInputController.getValue()) {
-      //Print message
       return;
     }
 
@@ -79,7 +76,9 @@ class RegisterPage extends DynamicComponent {
 
   function infoLable(): Widget {
     if(errorMessage == "Http Error #400") {
-      return new Text("Brukernavn er tatt");
+      return new Text("Brukernavn eller passord er feil");
+    } else if(errorMessage != "") {
+      return new Text(errorMessage);
     }
     return new Container({});
   }

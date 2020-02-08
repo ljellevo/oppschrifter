@@ -8,20 +8,16 @@ module.exports = function(app) {
 
   async function authenticateRequest(request) {
     if(!request.headers.cookie) {
-      console.log("Could not authenticate request");
       return false;
     }
     var token = request.headers.cookie.split("=")[1];
-    console.log(token)
     var decoded = jwt.verify(token, jwtsecret.config.secret);
-    console.log(decoded);
 
     var database = new Database();
     var result = await database.query(function(client) {
       const collection = client.db("oppschrifter").collection("users");
       return collection.findOne({username: decoded.username}, function(err, result) {
         if(err) console.log(err);
-        console.log(result);
         if(result.password == decoded.password) {
           return true;
         } else {
@@ -34,23 +30,18 @@ module.exports = function(app) {
 
 
   app.post('/api/auth', function(req, res){
-    console.log("Started req");
     if(!req.headers.cookie) {
-      console.log("No cookie");
       res.send(false);
       return;
     }
     var token = req.headers.cookie.split("=")[1];
-    console.log(token)
     var decoded = jwt.verify(token, jwtsecret.config.secret);
-    console.log(decoded);
 
     var database = new Database();
     database.query(function(client) {
       const collection = client.db("oppschrifter").collection("users");
       collection.findOne({username: decoded.username}, function(err, result) {
         if(err) console.log(err);
-        console.log(result);
         if(result.password == decoded.password) {
           res.send(true);
         } else {
@@ -66,13 +57,11 @@ module.exports = function(app) {
   app.post('/api/login', function(req, res){
    var username = req.body.username;
    var clientPassword = req.body.password;
-    console.log("Started req")
     var database = new Database();
     database.query(function(client) {
       const collection = client.db("oppschrifter").collection("users");
       collection.findOne({username: username}, function(err, result) {
         if(err) console.log(err);
-        console.log(result);
         var password = crypto.pbkdf2Sync(clientPassword, result.salt, result.iterations, result.keylength, result.digest).toString('hex');
         if(result.password == password) {
           res.statusCode = 200;
@@ -90,8 +79,6 @@ module.exports = function(app) {
    * Not done
    */
   app.post('/api/register', function(req, res){
-    console.log("Started req")
-    console.log(req.body);
     var username = req.body.username;
     var clientPassword = req.body.password;
     var salt = crypto.randomBytes(128).toString('base64');
@@ -117,7 +104,6 @@ module.exports = function(app) {
         if(err) console.log(err);
         if(result.length != 0) {
 
-          console.log("User exists");
           res.statusMessage = "User exists";
           res.status(400).end();
         } else {
@@ -125,8 +111,6 @@ module.exports = function(app) {
             const collection = client.db("oppschrifter").collection("users");
             collection.insertOne(userObject, function(err, result) {
               if(err) console.log(err);
-                console.log("User added to db");
-                console.log(result[0]);
                 res.statusCode = 200;
                 //Send JWT
                 var token = jwt.sign({username: username, password: password}, jwtsecret.config.secret);
@@ -140,10 +124,12 @@ module.exports = function(app) {
 
   app.post('/api/recipe', function(req, res){
 
+    /**
+     * Need to implemet auth of request
+     */
     var isAuthenticated = authenticateRequest(req).then(function(res) {
       return res;
     });
-    console.log("Started req")
     var database = new Database();
     database.query(function(client) {
       const collection = client.db("oppschrifter").collection("recipes");
@@ -151,6 +137,18 @@ module.exports = function(app) {
         req.body
       ]);
       res.send("Done");
+    });
+  });
+
+  app.post('/api/recipe/all', function(req, res){
+    console.log("Getting recipe")
+    var database = new Database();
+    database.query(function(client) {
+      const collection = client.db("oppschrifter").collection("recipes");
+      collection.find({}).sort(ascOrder).toArray(function(err, result) {
+        if(err) console.log(err);
+        res.send(result);
+      })
     });
   });
 

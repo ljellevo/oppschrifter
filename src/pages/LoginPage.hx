@@ -34,12 +34,9 @@ class LoginPage extends DynamicComponent {
       return;
     }
 
-    function testFunc(username: String, password: String, callback:String->Void):Void  {
+    function request(username: String, password: String, callback:String->Void):Void  {
       var sha = haxe.crypto.Sha256.encode(password);
-      trace(sha);
-
-      //Send username, password and random generated salt
-      object = {username: username,password: sha};
+      object = {username: username, password: sha};
 
       req.setHeader ("Content-type", "application/json");     
       req.setPostData(Json.stringify(object));
@@ -57,7 +54,7 @@ class LoginPage extends DynamicComponent {
       req.request( true ); 	
     }
 
-    testFunc(usernameInputController.getValue(), passwordInputController.getValue(), function(response){
+    request(usernameInputController.getValue(), passwordInputController.getValue(), function(response){
       trace("Got the response via callback", response);
       Cookie.set("credentials", response, 315569260);
       Navigate.to({url: "/"});
