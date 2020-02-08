@@ -1,12 +1,162 @@
 module.exports = function(app) {
   const Database = require("./database");
   var ObjcetId = require('mongodb').ObjectId;
+  var crypto = require('crypto');
+  var jwt = require('jsonwebtoken');
+  var jwtsecret = require('./jwt_secret');
   var ascOrder = {order: 1};
 
+  async function authenticateRequest(request) {
+    if(!request.headers.cookie) {
+      console.log("Could not authenticate request");
+      return false;
+    }
+    var token = request.headers.cookie.split("=")[1];
+    console.log(token)
+    var decoded = jwt.verify(token, jwtsecret.config.secret);
+    console.log(decoded);
+
+    var database = new Database();
+    var result = await database.query(function(client) {
+      const collection = client.db("oppschrifter").collection("users");
+      return collection.findOne({username: decoded.username}, function(err, result) {
+        if(err) console.log(err);
+        console.log(result);
+        if(result.password == decoded.password) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+    });
+    return result;
+  }
 
 
-  
-  app.get('/api/widgets', function(req, res){
+  app.post('/api/auth', function(req, res){
+    console.log("Started req");
+    if(!req.headers.cookie) {
+      console.log("No cookie");
+      res.send(false);
+      return;
+    }
+    var token = req.headers.cookie.split("=")[1];
+    console.log(token)
+    var decoded = jwt.verify(token, jwtsecret.config.secret);
+    console.log(decoded);
+
+    var database = new Database();
+    database.query(function(client) {
+      const collection = client.db("oppschrifter").collection("users");
+      collection.findOne({username: decoded.username}, function(err, result) {
+        if(err) console.log(err);
+        console.log(result);
+        if(result.password == decoded.password) {
+          res.send(true);
+        } else {
+          res.send(false);
+        }
+      })
+    });
+  });
+
+  /**
+   * Not done
+   */
+  app.post('/api/login', function(req, res){
+   var username = req.body.username;
+   var clientPassword = req.body.password;
+    console.log("Started req")
+    var database = new Database();
+    database.query(function(client) {
+      const collection = client.db("oppschrifter").collection("users");
+      collection.findOne({username: username}, function(err, result) {
+        if(err) console.log(err);
+        console.log(result);
+        var password = crypto.pbkdf2Sync(clientPassword, result.salt, result.iterations, result.keylength, result.digest).toString('hex');
+        if(result.password == password) {
+          res.statusCode = 200;
+          var token = jwt.sign({username: username, password: password}, jwtsecret.config.secret);
+          res.send(token);
+        } else {
+          res.statusMessage = "Wrong password";
+          res.status(400).end();
+        }
+      })
+    });
+  }); 
+
+  /**
+   * Not done
+   */
+  app.post('/api/register', function(req, res){
+    console.log("Started req")
+    console.log(req.body);
+    var username = req.body.username;
+    var clientPassword = req.body.password;
+    var salt = crypto.randomBytes(128).toString('base64');
+    var iterations = 10000;
+    var keylength = 512;
+    var digest = "sha512";
+    var password = crypto.pbkdf2Sync(clientPassword, salt, iterations, keylength, digest).toString('hex');
+
+    var userObject = {
+      username: username,
+      password: password,
+      salt: salt,
+      iterations: iterations,
+      keylength: keylength,
+      digest: digest
+  };
+
+
+    var database = new Database();
+    database.query(function(client) {
+      const collection = client.db("oppschrifter").collection("users");
+      collection.find({username: username}).toArray(function(err, result) {
+        if(err) console.log(err);
+        if(result.length != 0) {
+
+          console.log("User exists");
+          res.statusMessage = "User exists";
+          res.status(400).end();
+        } else {
+          database.query(function(client) {
+            const collection = client.db("oppschrifter").collection("users");
+            collection.insertOne(userObject, function(err, result) {
+              if(err) console.log(err);
+                console.log("User added to db");
+                console.log(result[0]);
+                res.statusCode = 200;
+                //Send JWT
+                var token = jwt.sign({username: username, password: password}, jwtsecret.config.secret);
+                res.send(token);
+            })
+          });
+        }
+      })
+    });
+  });
+
+  app.post('/api/recipe', function(req, res){
+
+    var isAuthenticated = authenticateRequest(req).then(function(res) {
+      return res;
+    });
+    console.log("Started req")
+    var database = new Database();
+    database.query(function(client) {
+      const collection = client.db("oppschrifter").collection("recipes");
+      collection.insertMany([
+        req.body
+      ]);
+      res.send("Done");
+    });
+  });
+
+
+  /*
+  app.get('/api/recipe', function(req, res){
     var database = new Database();
     database.query(function(client) {
       const collection = client.db("static").collection("categories");
@@ -18,7 +168,7 @@ module.exports = function(app) {
   });
 
 
-  app.get('/api/widgets/:category', function(req, res){
+  app.get('/api/recipe/:category', function(req, res){
     var category = req.params.category
     var database = new Database();
     database.query(function(client) {
@@ -29,57 +179,7 @@ module.exports = function(app) {
       })
     });
   });
-
-  app.get('/api/widgets/:category/:name', function(req, res){
-    var name = req.params.name
-    var database = new Database();
-    database.query(function(client) {
-      const collection = client.db("static").collection("catalogue");
-      collection.findOne({name:  new RegExp("^" + name + "$", "i") }, function(err, result){
-        if(err) console.log(err);
-        res.send(result);
-      })  
-    });
-  });
+  */
 
 
-
-  app.get('/api/guides', function(req, res){
-    var database = new Database();
-    database.query(function(client) {
-      const collection = client.db("static").collection("quick-start-guides");
-      collection.find({}, {projection: {_id: 1, title: 1, desc: 1}}).toArray(function(err, result) {
-        if(err) console.log(err);
-        //Need to add order to guides and sort them with ascOrder
-        res.send(result);
-      })
-    });
-  });
-
-  app.get('/api/guides/:id', function(req, res){
-    var id = req.params.id
-    console.log(id);
-    var database = new Database();
-    database.query(function(client) {
-      const collection = client.db("static").collection("quick-start-guides");
-      collection.findOne({_id: ObjcetId(id)}, function(err, result){
-        if(err) console.log(err);
-        res.send(result);
-      })
-    });
-  });
-
-  app.get('/api/news', function(req, res) {
-    var database = new Database();
-    var decDate = {date: -1};
-    console.log("Getting news")
-    database.query(function(client) {
-      const collection = client.db("static").collection("news");
-      collection.find({}).limit(3).sort(decDate).toArray(function(err, result) {
-        console.log("Getting news inside")
-        if(err) console.log(err);
-        res.send(result);
-      })
-    });
-  });
 }

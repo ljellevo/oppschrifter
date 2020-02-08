@@ -7,12 +7,15 @@ import com.vige.support.Enums.CenterAlignment;
 import components.*;
 
 import com.vige.components.*;
+import com.vige.components.Input.InputController;
 import com.vige.core.*;
 import com.vige.utils.*;
 import com.vige.support.*;
 
 class HomePage extends DynamicComponent {
   var data: Array<String> = ["Pasta", "Pizza"];
+
+  var searchInputController = new InputController();
 
   public function new() {}
 
@@ -52,6 +55,7 @@ class HomePage extends DynamicComponent {
               alignment: CenterAlignment.Both,
               child: new Input({
                 type: InputType.Search, 
+                controller: searchInputController,
                 placeholder: "Søk etter oppskrift",
                 size: new Size({
                   width: "75%",
