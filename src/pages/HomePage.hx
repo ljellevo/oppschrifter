@@ -1,5 +1,8 @@
 package pages;
 
+import com.vige.support.Enums.MainAxisAlignment;
+import classes.Recipe;
+import com.akifox.asynchttp.HttpResponse;
 import haxe.Json;
 import haxe.Http;
 import com.vige.support.Enums.CrossAxisAlignment;
@@ -22,14 +25,19 @@ typedef RecipeStruct = {
   tags: String
 } 
 
+
+
+
 class HomePage extends DynamicComponent {
-  var data: Array<RecipeStruct> = [];
+  var data: Array<Recipe> = [];
 
   var searchInputController = new InputController();
-
+  var currentValue: String;
   public function new() {}
 
+  
   function getRecipe(callback:String->Void){
+    /*
     var object:Dynamic;
     var req = new Http( "http://localhost:3000/api/recipe/all");
 
@@ -42,11 +50,7 @@ class HomePage extends DynamicComponent {
       req.onData = function(response:String) {
         var recipes = [];
         var value: Array<RecipeStruct> = Json.parse(response);
-        /*
-        for(i in 0...value.length) {
-          recipes.push(value[i])
-        }
-        */
+
         
         callback( value );
       }
@@ -60,9 +64,35 @@ class HomePage extends DynamicComponent {
         data = value;
       });
     });
+    */
+    new SingleRequest({
+      url: "http://localhost:3000/api/recipe",
+      method: "GET",
+      onComplete: function(res: HttpResponse) {
+        setState(this, function(){
+          var value: Array<RecipeStruct> = Json.parse(res.content);
+          
+          var recipes = [];
+          for(i in 0...value.length) {
+            recipes.push(
+              new Recipe(
+                value[i].name, 
+                value[i].category,
+                value[i].url,
+                value[i].tags
+              )
+            );
+          } 
+          data = recipes;         
+        });
+      },
+      onProgress: function() {
+      }
+    }).request();
   }
 
   override public function component(): Page {
+    
     page = new Page({
       navbar: new CustomNavbar().navbarComponent(),
       route: "/",
@@ -94,7 +124,9 @@ class HomePage extends DynamicComponent {
             })
           }),
           new Container({
+            padding: Padding.fromTRBL(0, 0, 30, 0),
             child: new Center({
+
               alignment: CenterAlignment.Both,
               child: new Input({
                 type: InputType.Search, 
@@ -104,16 +136,36 @@ class HomePage extends DynamicComponent {
                   width: "75%",
                   maxWidth: "450px",
                 }),
+                value: currentValue,
                 onchange: function() {
+                  /*
+                  currentValue = searchInputController.getValue();
                   getRecipe(function(token) {
                     trace("Login was successfull and token was recived");
                   });
+                  */
                 }
               })
             })
           }),
           new Container({
-            padding: Padding.fromTRBL(30, 0, 30, 0),
+            padding: Padding.fromTRBL(0, 0, 30, 0),
+            child: new Center({
+              alignment: CenterAlignment.Both,
+              child: new Button({
+                child: new Text("Search"),
+                onClick: function() {
+                  trace("Search was clicked");
+                  currentValue = searchInputController.getValue();
+                  getRecipe(function(token) {
+                    trace("Login was successfull and token was recived");
+                  });
+                }
+              })
+            }),
+          }),
+          new Container({
+            padding: Padding.fromTRBL(0, 0, 30, 0),
             child: new Center({
               alignment: CenterAlignment.Both,
               child: new Column({
@@ -124,8 +176,8 @@ class HomePage extends DynamicComponent {
                 children: Constructors.constructRows({
                   data: data,
                   elementsInEachRow: 1,
-                  elementBuilder: function(iteratior) {
-                    return new Text(data[iteratior].name);
+                  elementBuilder: function(iterator) {
+                    return new Text(data[iterator].getName());
                   },
                   rowBuilder: function(children) {
                     return new Row({
@@ -136,18 +188,7 @@ class HomePage extends DynamicComponent {
               })
             })
           }),
-          new Center({
-            alignment: CenterAlignment.Both,
-            child: new Button({
-              child: new Text("Search"),
-              onClick: function() {
-                trace("Search was clicked");
-                getRecipe(function(token) {
-                  trace("Login was successfull and token was recived");
-                });
-              }
-            })
-          })
+          
         ]
       })
     });

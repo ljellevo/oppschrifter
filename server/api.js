@@ -140,7 +140,7 @@ module.exports = function(app) {
     });
   });
 
-  app.post('/api/recipe/all', function(req, res){
+  app.get('/api/recipe', function(req, res){
     console.log("Getting recipe")
     var database = new Database();
     database.query(function(client) {
