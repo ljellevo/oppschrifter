@@ -171,7 +171,7 @@ class AddPage extends DynamicComponent {
                 child: new Text("Legg til"),
                 onClick: function () {
                   trace("Added");
-                  /*
+                  
                   if(nameInputController.getValue() == "") {
                     return;
                   }
@@ -189,8 +189,8 @@ class AddPage extends DynamicComponent {
                   }
 
                   newRecipe = new Recipe(nameInputController.getValue(), categoryInputController.getValue(), urlInputController.getValue(), tagsInputController.getValue());
-                  */
-                  newRecipe = new Recipe("Pasta Carbonara", "Italiensk", "http://oppskrifter.no", "middag pasta italiensk kjapp");
+                  
+                  //newRecipe = new Recipe("Pasta Carbonara", "Italiensk", "http://oppskrifter.no", "middag pasta italiensk kjapp");
                   addRecipe();
                 }
               })

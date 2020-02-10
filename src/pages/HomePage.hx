@@ -22,7 +22,9 @@ typedef RecipeStruct = {
   name: String,
   category: String,
   url: String,
-  tags: String
+  tags: String,
+  uploaded: Float,
+  viewed: Int
 } 
 
 
@@ -66,7 +68,7 @@ class HomePage extends DynamicComponent {
     });
     */
     new SingleRequest({
-      url: "http://localhost:3000/api/recipe",
+      url: "http://localhost:3000/api/recipe/" + searchInputController.getValue(),
       method: "GET",
       onComplete: function(res: HttpResponse) {
         setState(this, function(){
@@ -79,7 +81,9 @@ class HomePage extends DynamicComponent {
                 value[i].name, 
                 value[i].category,
                 value[i].url,
-                value[i].tags
+                value[i].tags,
+                value[i].uploaded,
+                value[i].viewed
               )
             );
           } 
@@ -87,6 +91,8 @@ class HomePage extends DynamicComponent {
         });
       },
       onProgress: function() {
+      },
+      onError: function(error) {
       }
     }).request();
   }
@@ -177,7 +183,18 @@ class HomePage extends DynamicComponent {
                   data: data,
                   elementsInEachRow: 1,
                   elementBuilder: function(iterator) {
-                    return new Text(data[iterator].getName());
+                    return new Container({
+                      margin: Margin.fromTRBL(0, 0, 20, 0),
+                      size: new Size({
+                        height: "100px",
+                        width: "100%",
+                      }),
+                      shadow: [
+                        new Shadow({horizontal: "0px", vertical: "4px", blur: "6px", color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})}),
+                        new Shadow({horizontal: "0px", vertical: "6px", blur: "20px", color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})})
+                      ],
+                      child: new Text(data[iterator].getName())
+                    });
                   },
                   rowBuilder: function(children) {
                     return new Row({

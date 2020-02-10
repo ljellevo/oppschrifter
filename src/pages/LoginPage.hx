@@ -93,7 +93,8 @@ class LoginPage extends DynamicComponent {
             alignment: CenterAlignment.Both,
             child: new Container({
               shadow: [
-                new Shadow({horizontal: "0px", vertical: "4px", blur: "8px", color: new Color({backgroundColor: Colors.fromString("#808080")})})
+                new Shadow({horizontal: "0px", vertical: "4px", blur: "6px", color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})}),
+                new Shadow({horizontal: "0px", vertical: "6px", blur: "20px", color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})})
               ],
               color: new Color({backgroundColor: Colors.fromString("#fafafa")}),
               size: new Size({width: "300px"}),

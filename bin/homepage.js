@@ -415,11 +415,13 @@ Xml.prototype = {
 	}
 	,__class__: Xml
 };
-var classes_Recipe = function(name,category,url,tags) {
+var classes_Recipe = function(name,category,url,tags,uploaded,viewed) {
 	this.name = name;
 	this.category = category;
 	this.url = url;
 	this.tags = tags;
+	this.uploaded = uploaded != null ? uploaded : new Date().getTime();
+	this.viewed = viewed != null ? viewed : 0;
 };
 classes_Recipe.__name__ = "classes.Recipe";
 classes_Recipe.prototype = {
@@ -435,8 +437,14 @@ classes_Recipe.prototype = {
 	,getTags: function() {
 		return this.tags;
 	}
+	,getViewed: function() {
+		return this.viewed;
+	}
+	,incrementView: function() {
+		this.viewed++;
+	}
 	,toJSON: function() {
-		var object = { name : this.name, category : this.category, url : this.url, tags : this.tags};
+		var object = { name : this.name, category : this.category, url : this.url, tags : this.tags, uploaded : this.uploaded, viewed : this.viewed};
 		return JSON.stringify(object);
 	}
 	,__class__: classes_Recipe
@@ -4938,7 +4946,23 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
 		this.page = new com_vige_components_Page({ navbar : tmp, route : "/add", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.nameInputController, placeholder : "Navn på oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.categoryInputController, placeholder : "Kategori", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.urlInputController, placeholder : "Link til oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.tagsInputController, placeholder : "Stikkord", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Legg til"), onClick : function() {
 			haxe_Log.trace("Added",{ fileName : "src/pages/AddPage.hx", lineNumber : 173, className : "pages.AddPage", methodName : "component"});
-			_gthis.newRecipe = new classes_Recipe("Pasta Carbonara","Italiensk","http://oppskrifter.no","middag pasta italiensk kjapp");
+			if(_gthis.nameInputController.getValue() == "") {
+				return;
+			}
+			if(_gthis.categoryInputController.getValue() == "") {
+				return;
+			}
+			if(_gthis.urlInputController.getValue() == "") {
+				return;
+			}
+			if(_gthis.tagsInputController.getValue() == "") {
+				return;
+			}
+			var tmp6 = _gthis.nameInputController.getValue();
+			var tmp7 = _gthis.categoryInputController.getValue();
+			var tmp8 = _gthis.urlInputController.getValue();
+			var tmp9 = _gthis.tagsInputController.getValue();
+			_gthis.newRecipe = new classes_Recipe(tmp6,tmp7,tmp8,tmp9);
 			_gthis.addRecipe();
 		}})})})]})});
 		return this.page;
@@ -4955,7 +4979,7 @@ pages_HomePage.__super__ = com_vige_core_DynamicComponent;
 pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 	getRecipe: function(callback) {
 		var _gthis = this;
-		new com_vige_core_SingleRequest({ url : "http://localhost:3000/api/recipe", method : "GET", onComplete : function(res) {
+		new com_vige_core_SingleRequest({ url : "http://localhost:3000/api/recipe/" + this.searchInputController.getValue(), method : "GET", onComplete : function(res) {
 			_gthis.setState(_gthis,function() {
 				var value = JSON.parse(res.get_content());
 				var recipes = [];
@@ -4963,11 +4987,12 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 				var _g1 = value.length;
 				while(_g < _g1) {
 					var i = _g++;
-					recipes.push(new classes_Recipe(value[i].name,value[i].category,value[i].url,value[i].tags));
+					recipes.push(new classes_Recipe(value[i].name,value[i].category,value[i].url,value[i].tags,value[i].uploaded,value[i].viewed));
 				}
 				_gthis.data = recipes;
 			});
 		}, onProgress : function() {
+		}, onError : function(error) {
 		}}).request();
 	}
 	,component: function() {
@@ -4981,13 +5006,18 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
 		this.page = new com_vige_components_Page({ navbar : tmp, route : "/", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("OPPSCHRIFTER",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.searchInputController, placeholder : "Søk etter oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), value : this.currentValue, onchange : function() {
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Search"), onClick : function() {
-			haxe_Log.trace("Search was clicked",{ fileName : "src/pages/HomePage.hx", lineNumber : 158, className : "pages.HomePage", methodName : "component"});
+			haxe_Log.trace("Search was clicked",{ fileName : "src/pages/HomePage.hx", lineNumber : 164, className : "pages.HomePage", methodName : "component"});
 			_gthis.currentValue = _gthis.searchInputController.getValue();
 			_gthis.getRecipe(function(token) {
-				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 161, className : "pages.HomePage", methodName : "component"});
+				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 167, className : "pages.HomePage", methodName : "component"});
 			});
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : com_vige_components_Constructors.constructRows({ data : this.data, elementsInEachRow : 1, elementBuilder : function(iterator) {
-			return new com_vige_components_Text(_gthis.data[iterator].getName());
+			var tmp6 = com_vige_utils_Margin.fromTRBL(0,0,20,0);
+			var tmp7 = new com_vige_utils_Size({ height : "100px", width : "100%"});
+			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp8 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this11})});
+			var this12 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			return new com_vige_components_Container({ margin : tmp6, size : tmp7, shadow : [tmp8,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this12})})], child : new com_vige_components_Text(_gthis.data[iterator].getName())});
 		}, rowBuilder : function(children) {
 			return new com_vige_components_Row({ children : children});
 		}})})})})]})});
@@ -5050,21 +5080,23 @@ pages_LoginPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var tmp1 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
 		var tmp2 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
 		var tmp3 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
-		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#808080",1,null));
-		var tmp4 = [new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "8px", color : new com_vige_utils_Color({ backgroundColor : this1})})];
-		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		var tmp5 = new com_vige_utils_Color({ backgroundColor : this11});
-		var tmp6 = new com_vige_utils_Size({ width : "300px"});
-		var tmp7 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
-		var tmp8 = new com_vige_support_Fonts("Poppins","sans-serif");
-		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ route : "/", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp4, color : tmp5, size : tmp6, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("LOGG INN",{ textSize : 40, font : tmp8, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this12})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Register"), onClick : function() {
-			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 155, className : "pages.LoginPage", methodName : "component"});
+		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+		var tmp4 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this1})});
+		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+		var tmp5 = [tmp4,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this11})})];
+		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		var tmp6 = new com_vige_utils_Color({ backgroundColor : this12});
+		var tmp7 = new com_vige_utils_Size({ width : "300px"});
+		var tmp8 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
+		var tmp9 = new com_vige_support_Fonts("Poppins","sans-serif");
+		var this13 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+		this.page = new com_vige_components_Page({ route : "/", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp5, color : tmp6, size : tmp7, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("LOGG INN",{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this13})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Register"), onClick : function() {
+			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 156, className : "pages.LoginPage", methodName : "component"});
 			com_vige_core_Navigate.to({ url : "/register"});
 		}})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Logg inn"), onClick : function() {
-			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 165, className : "pages.LoginPage", methodName : "component"});
+			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 166, className : "pages.LoginPage", methodName : "component"});
 			_gthis.login(function(token) {
-				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/LoginPage.hx", lineNumber : 167, className : "pages.LoginPage", methodName : "component"});
+				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/LoginPage.hx", lineNumber : 168, className : "pages.LoginPage", methodName : "component"});
 			});
 		}})})]})})]})})})]})});
 		return this.page;

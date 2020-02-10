@@ -5,28 +5,9 @@ module.exports = function(app) {
   var jwt = require('jsonwebtoken');
   var jwtsecret = require('./jwt_secret');
   var ascOrder = {order: 1};
+  var newestFirst = {uploaded: -1};
+  var oldestFirst = {uploaded: 1};
 
-  async function authenticateRequest(request) {
-    if(!request.headers.cookie) {
-      return false;
-    }
-    var token = request.headers.cookie.split("=")[1];
-    var decoded = jwt.verify(token, jwtsecret.config.secret);
-
-    var database = new Database();
-    var result = await database.query(function(client) {
-      const collection = client.db("oppschrifter").collection("users");
-      return collection.findOne({username: decoded.username}, function(err, result) {
-        if(err) console.log(err);
-        if(result.password == decoded.password) {
-          return true;
-        } else {
-          return false;
-        }
-      })
-    });
-    return result;
-  }
 
 
   app.post('/api/auth', function(req, res){
@@ -122,62 +103,82 @@ module.exports = function(app) {
     });
   });
 
+  function authenticateRequest(request, callback) {
+    if(!request.headers.cookie) {
+      console.log("No header")
+      return false;
+    }
+    var token = request.headers.cookie.split("=")[1];
+    var decoded = jwt.verify(token, jwtsecret.config.secret);
+
+    var database = new Database();
+    database.query(function(client) {
+      const collection = client.db("oppschrifter").collection("users");
+      collection.findOne({username: decoded.username}, function(err, result) {
+        console.log("Fetching user")
+        if(err) console.log(err);
+        if(result.password == decoded.password) {
+          console.log("Passwords match")
+          callback(true)
+        } else {
+          console.log("Passwords dont match")
+          callback(false)
+        }
+      })
+    });
+  }
+
+  app.get('/api/recipe/:query', function(req, res){
+    var query = req.params.query;
+    authenticateRequest(req, function(result) {
+      console.log("Is request authnticated?: " + result);
+      console.log("Getting recipe")
+      var database = new Database();
+      database.query(function(client) {
+        const collection = client.db("oppschrifter").collection("recipes");
+        //.sort(ascOrder)
+        collection.find({tags: {$regex : new RegExp(".*" + query + ".*", "i")}}).toArray(function(err, result) {
+          if(err) console.log(err);
+          console.log(result)
+          res.send(result);
+        })
+      });
+    });
+  });
+
+  app.get('/api/recipe/', function(req, res){
+    authenticateRequest(req, function(result) {
+      console.log("Is request authnticated?: " + result);
+
+      var database = new Database();
+      database.query(function(client) {
+        const collection = client.db("oppschrifter").collection("recipes");
+        //.sort(ascOrder)
+        collection.find({}).sort(newestFirst).toArray(function(err, result) {
+          if(err) console.log(err);
+          console.log(result)
+          res.send(result);
+        })
+      });
+    });
+  });
+
   app.post('/api/recipe', function(req, res){
 
     /**
      * Need to implemet auth of request
      */
-    var isAuthenticated = authenticateRequest(req).then(function(res) {
-      return res;
-    });
-    var database = new Database();
-    database.query(function(client) {
-      const collection = client.db("oppschrifter").collection("recipes");
-      collection.insertMany([
-        req.body
-      ]);
-      res.send("Done");
-    });
-  });
-
-  app.get('/api/recipe', function(req, res){
-    console.log("Getting recipe")
-    var database = new Database();
-    database.query(function(client) {
-      const collection = client.db("oppschrifter").collection("recipes");
-      collection.find({}).sort(ascOrder).toArray(function(err, result) {
-        if(err) console.log(err);
-        res.send(result);
-      })
+    authenticateRequest(req, function(result) {
+      var database = new Database();
+      database.query(function(client) {
+        const collection = client.db("oppschrifter").collection("recipes");
+        collection.insertMany([
+          req.body
+        ]);
+        res.send("Done");
+      });
     });
   });
-
-
-  /*
-  app.get('/api/recipe', function(req, res){
-    var database = new Database();
-    database.query(function(client) {
-      const collection = client.db("static").collection("categories");
-      collection.find({}).sort(ascOrder).toArray(function(err, result) {
-        if(err) console.log(err);
-        res.send(result);
-      })
-    });
-  });
-
-
-  app.get('/api/recipe/:category', function(req, res){
-    var category = req.params.category
-    var database = new Database();
-    database.query(function(client) {
-      const collection = client.db("static").collection("catalogue");
-      collection.find({category: category}).sort(ascOrder).toArray(function(err, result) {
-        if(err) console.log(err);
-        res.send(result);
-      })
-    });
-  });
-  */
 
 
 }
