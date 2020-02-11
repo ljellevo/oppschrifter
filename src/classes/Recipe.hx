@@ -1,6 +1,7 @@
 package classes;
 
 class Recipe {
+  var id: String;
   var name: String;
   var category: String;
   var url: String;
@@ -8,13 +9,19 @@ class Recipe {
   var uploaded: Float;
   var viewed: Int;
   
-  public function new(name: String, category: String, url: String, tags: String, ?uploaded: Float, ?viewed: Int) {
+  public function new(name: String, category: String, url: String, tags: String, ?id: String, ?uploaded: Float, ?viewed: Int) {
+    this.id = id;
     this.name = name;
     this.category = category;
     this.url = url;
-    this.tags = tags;
+    this.tags = tags + " " + name + " " + category;
     this.uploaded = uploaded != null ? uploaded : Date.now().getTime();
     this.viewed = viewed != null ? viewed : 0;
+  }
+
+
+  public function getId(): String {
+    return id;
   }
 
   public function getName() : String {

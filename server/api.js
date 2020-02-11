@@ -6,6 +6,7 @@ module.exports = function(app) {
   var jwtsecret = require('./jwt_secret');
   var ascOrder = {order: 1};
   var newestFirst = {uploaded: -1};
+  var mostViewed = {viewed: -1};
   var oldestFirst = {uploaded: 1};
 
 
@@ -106,7 +107,7 @@ module.exports = function(app) {
   function authenticateRequest(request, callback) {
     if(!request.headers.cookie) {
       console.log("No header")
-      return false;
+      return null;
     }
     var token = request.headers.cookie.split("=")[1];
     var decoded = jwt.verify(token, jwtsecret.config.secret);
@@ -119,66 +120,78 @@ module.exports = function(app) {
         if(err) console.log(err);
         if(result.password == decoded.password) {
           console.log("Passwords match")
-          callback(true)
+          callback(result)
         } else {
           console.log("Passwords dont match")
-          callback(false)
+          callback(null)
         }
       })
     });
   }
 
+  /**
+   * Get result from search with query
+   */
   app.get('/api/recipe/:query', function(req, res){
     var query = req.params.query;
     authenticateRequest(req, function(result) {
-      console.log("Is request authnticated?: " + result);
-      console.log("Getting recipe")
-      var database = new Database();
-      database.query(function(client) {
-        const collection = client.db("oppschrifter").collection("recipes");
-        //.sort(ascOrder)
-        collection.find({tags: {$regex : new RegExp(".*" + query + ".*", "i")}}).toArray(function(err, result) {
-          if(err) console.log(err);
-          console.log(result)
-          res.send(result);
-        })
-      });
+      if(result != null) {
+        console.log("Is request authnticated?: " + result);
+        console.log("Getting recipe")
+        var database = new Database();
+        database.query(function(client) {
+          const collection = client.db("oppschrifter").collection("recipes");
+          collection.find({tags: {$regex : new RegExp(".*" + query + ".*", "i")}}).sort(mostViewed).toArray(function(err, result) {
+            if(err) console.log(err);
+            console.log(result)
+            res.send(result);
+          })
+        });
+      } else {
+        res.statusMessage = "Not authenticated";
+        res.status(403).end();
+      }
     });
   });
 
+  /**
+   * Get all, sorted by newest first
+   */
   app.get('/api/recipe/', function(req, res){
     authenticateRequest(req, function(result) {
-      console.log("Is request authnticated?: " + result);
-
-      var database = new Database();
-      database.query(function(client) {
-        const collection = client.db("oppschrifter").collection("recipes");
-        //.sort(ascOrder)
-        collection.find({}).sort(newestFirst).toArray(function(err, result) {
-          if(err) console.log(err);
-          console.log(result)
-          res.send(result);
-        })
-      });
+      if(result != null) {
+        console.log("Is request authnticated?: " + result);
+        var database = new Database();
+        database.query(function(client) {
+          const collection = client.db("oppschrifter").collection("recipes");
+          collection.find({}).sort(newestFirst).toArray(function(err, result) {
+            if(err) console.log(err);
+            console.log(result)
+            res.send(result);
+          })
+        });
+      } else {
+        res.statusMessage = "Not authenticated";
+        res.status(403).end();
+      }
     });
   });
 
   app.post('/api/recipe', function(req, res){
-
-    /**
-     * Need to implemet auth of request
-     */
     authenticateRequest(req, function(result) {
-      var database = new Database();
-      database.query(function(client) {
-        const collection = client.db("oppschrifter").collection("recipes");
-        collection.insertMany([
-          req.body
-        ]);
-        res.send("Done");
-      });
+      if(result != null) {
+        var database = new Database();
+        database.query(function(client) {
+          const collection = client.db("oppschrifter").collection("recipes");
+          collection.insertMany([
+            req.body
+          ]);
+          res.send("Done");
+        });
+      } else {
+        res.statusMessage = "Not authenticated";
+        res.status(403).end();
+      }
     });
   });
-
-
 }

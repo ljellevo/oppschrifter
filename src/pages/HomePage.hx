@@ -82,6 +82,7 @@ class HomePage extends DynamicComponent {
                 value[i].category,
                 value[i].url,
                 value[i].tags,
+                value[i]._id,
                 value[i].uploaded,
                 value[i].viewed
               )
@@ -183,17 +184,23 @@ class HomePage extends DynamicComponent {
                   data: data,
                   elementsInEachRow: 1,
                   elementBuilder: function(iterator) {
-                    return new Container({
-                      margin: Margin.fromTRBL(0, 0, 20, 0),
-                      size: new Size({
-                        height: "100px",
-                        width: "100%",
-                      }),
-                      shadow: [
-                        new Shadow({horizontal: "0px", vertical: "4px", blur: "6px", color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})}),
-                        new Shadow({horizontal: "0px", vertical: "6px", blur: "20px", color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})})
-                      ],
-                      child: new Text(data[iterator].getName())
+                    return new Action({
+                      onClick: function() {
+                        Navigate.to({url: "/recipe/" + data[iterator].getId()});
+                      },
+                      child: new Container({
+                        color: new Color({backgroundColor: Colors.fromString("#fafafa")}),
+                        margin: Margin.fromTRBL(0, 0, 20, 0),
+                        size: new Size({
+                          height: "100px",
+                          width: "100%",
+                        }),
+                        shadow: [
+                          new Shadow({horizontal: "0px", vertical: "4px", blur: "6px", color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})}),
+                          new Shadow({horizontal: "0px", vertical: "0px", blur: "2px", color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})})
+                        ],
+                        child: new Text(data[iterator].getName())
+                      })
                     });
                   },
                   rowBuilder: function(children) {

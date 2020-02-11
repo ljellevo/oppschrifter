@@ -37,6 +37,7 @@ class Main {
       Navigate.routes = [
         new HomePage(),
         new AddPage(),
+        new RecipePage()
 
       ];
   
