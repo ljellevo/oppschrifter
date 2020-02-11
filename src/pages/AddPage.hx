@@ -1,5 +1,6 @@
 package pages;
 
+import com.vige.support.Enums.MainAxisAlignment;
 import haxe.Json;
 import haxe.Http;
 import com.vige.support.Enums.FontWeight;
@@ -21,8 +22,14 @@ class AddPage extends DynamicComponent {
 
   var nameInputController = new InputController();
   var categoryInputController = new InputController();
+  var linkInputController = new InputController();
   var urlInputController = new InputController();
   var tagsInputController = new InputController();
+  var ingredientInputController = new InputController();
+  var amountInputController = new InputController();
+  var stepInputController = new InputController();
+  var stepControllers = new Array<InputController>();
+  var stepAmount = 1;
 
 
   function addRecipe(){
@@ -69,6 +76,40 @@ class AddPage extends DynamicComponent {
   }
 
   public function new() {}
+
+
+  function generateSteps(): Array<Widget> {
+    //stepControllers = [];
+    var widgets: Array<Widget> = [];
+    for(i in 0...stepAmount) {
+      var controller = new InputController();
+      if(i >= stepControllers.length) {
+        stepControllers.push(controller);
+      } else {
+        controller = stepControllers[i];
+      }
+      
+      widgets.push(
+        new Container({
+          padding: Padding.fromTRBL(0, 0, 30, 0),
+          child: new Center({
+            alignment: CenterAlignment.Both,
+            child: new Input({
+              type: InputType.Search, 
+              controller: controller,
+              placeholder: "Steg " + (i + 1),
+              value: controller.getValue(),
+              size: new Size({
+                width: "75%",
+                maxWidth: "450px",
+              })
+            })
+          })
+        })
+      );
+    }
+    return widgets;
+  }
 
   override public function component(): Page {
     page = new Page({
@@ -135,6 +176,130 @@ class AddPage extends DynamicComponent {
             padding: Padding.fromTRBL(0, 0, 30, 0),
             child: new Center({
               alignment: CenterAlignment.Both,
+              child: new Row({
+                
+                flex: true,
+                size: new Size({
+                  width: "75%",
+                  maxWidth: "450px",
+                }),
+                children: [
+                  new Text("Link?", {
+                    size: new Size({
+                      width: "10px",
+                    }),
+                  }),
+                  new Input({
+                    type: InputType.Checkbox, 
+                    controller: linkInputController,
+                    placeholder: "Stikkord",
+                    size: new Size({
+                      width: "10px",
+                    }),
+                  })
+                ],
+                mainAxisAlignment: MainAxisAlignment.Left
+              }),
+            }),
+          }),
+          //Manual entry
+          new Container({
+            padding: Padding.fromTRBL(30, 0, 30, 0),
+            child: new Center({
+              alignment: CenterAlignment.Both,
+              child: new Text(
+                "Ingredienser", {
+                  textSize: 20, 
+                  font: new Fonts("Poppins", "sans-serif"),
+                  fontWeight: FontWeight.W900,
+                  color: new Color({color: Colors.fromString("#2e3440")}),
+                })
+            })
+          }),
+          new Container({
+            padding: Padding.fromTRBL(0, 0, 30, 0),
+            child: new Center({
+              alignment: CenterAlignment.Both,
+              child: new Row({
+                size: new Size({
+                  width: "75%",
+                  maxWidth: "450px",
+                }),
+                children: [
+                  new Input({
+                    type: InputType.Search, 
+                    controller: ingredientInputController,
+                    placeholder: "Ingrediens",
+
+                  }),
+                  new Container({
+                    size: new Size({
+                      width: "20px",
+                    }),
+                  }),
+                  new Input({
+                    type: InputType.Search, 
+                    controller: amountInputController,
+                    placeholder: "Mengde",
+
+                  })
+                ]
+              })
+            })
+          }),
+          new Container({
+            padding: Padding.fromTRBL(30, 0, 30, 0),
+            child: new Center({
+              alignment: CenterAlignment.Both,
+              child: new Text(
+                "Steg", {
+                  textSize: 20, 
+                  font: new Fonts("Poppins", "sans-serif"),
+                  fontWeight: FontWeight.W900,
+                  color: new Color({color: Colors.fromString("#2e3440")}),
+                })
+            })
+          }),
+
+          new Column({
+            children: generateSteps()
+          }),
+          new Container({
+            padding: Padding.fromTRBL(0, 0, 30, 0),
+            child: new Center({
+              alignment: CenterAlignment.Both,
+              child: new Button({
+                child: new Text("+"),
+                onClick: function () {
+                  setState(this, function(e) {
+                    stepAmount++;
+                  });
+                }
+              })
+            })
+          }),
+          /*
+          new Container({
+            padding: Padding.fromTRBL(0, 0, 30, 0),
+            child: new Center({
+              alignment: CenterAlignment.Both,
+              child: new Input({
+                type: InputType.Search, 
+                controller: stepInputController,
+                placeholder: "Steg 1",
+                size: new Size({
+                  width: "75%",
+                  maxWidth: "450px",
+                })
+              })
+            })
+          }),
+          */
+          //Url entry
+          new Container({
+            padding: Padding.fromTRBL(0, 0, 30, 0),
+            child: new Center({
+              alignment: CenterAlignment.Both,
               child: new Input({
                 type: InputType.Search, 
                 controller: urlInputController,
@@ -190,6 +355,9 @@ class AddPage extends DynamicComponent {
                   newRecipe.constr(nameInputController.getValue(), categoryInputController.getValue(), urlInputController.getValue(), tagsInputController.getValue());
                   
                   //newRecipe = new Recipe("Pasta Carbonara", "Italiensk", "http://oppskrifter.no", "middag pasta italiensk kjapp");
+                  
+                  
+                  
                   addRecipe();
                 }
               })

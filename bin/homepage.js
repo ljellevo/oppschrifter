@@ -3772,14 +3772,14 @@ components_CustomNavbar.prototype = $extend(com_vige_core_DynamicComponent.proto
 		var determineBorder = function() {
 			var path = window.location.pathname;
 			if(path == url) {
-				var this11 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this11, sides : com_vige_support_BorderSides.Bottom});
+				var this2 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this2, sides : com_vige_support_BorderSides.Bottom});
 			}
 			return null;
 		};
 		var tmp = new com_vige_utils_Size({ height : "40px", width : "70px"});
-		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this12}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
+		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this3}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
 			if(url == "https://github.com/ljellevo/mist.io") {
 				com_vige_core_Navigate.link({ url : url});
 			}
@@ -3808,14 +3808,14 @@ components_CustomNavbar.prototype = $extend(com_vige_core_DynamicComponent.proto
 		var determineBorder = function() {
 			var path = window.location.pathname;
 			if(path == url) {
-				var this11 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this11, sides : com_vige_support_BorderSides.Bottom});
+				var this2 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this2, sides : com_vige_support_BorderSides.Bottom});
 			}
 			return null;
 		};
 		var tmp = new com_vige_utils_Size({ height : "40px", width : "70px"});
-		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this12}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
+		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this3}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
 			js_Cookie.remove("credentials");
 			window.location.reload();
 		}});
@@ -5262,8 +5262,14 @@ js_Cookie.remove = function(name,path,domain) {
 	js_Cookie.set(name,"",-10,path,domain);
 };
 var pages_AddPage = function() {
+	this.stepAmount = 1;
+	this.stepControllers = [];
+	this.stepInputController = new com_vige_components_InputController();
+	this.amountInputController = new com_vige_components_InputController();
+	this.ingredientInputController = new com_vige_components_InputController();
 	this.tagsInputController = new com_vige_components_InputController();
 	this.urlInputController = new com_vige_components_InputController();
+	this.linkInputController = new com_vige_components_InputController();
 	this.categoryInputController = new com_vige_components_InputController();
 	this.nameInputController = new com_vige_components_InputController();
 	this.status = "";
@@ -5287,8 +5293,24 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			req.request(true);
 		};
 		testFunc(this.newRecipe.toJSON(),function(response1) {
-			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/AddPage.hx", lineNumber : 67, className : "pages.AddPage", methodName : "addRecipe", customParams : [response1]});
+			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/AddPage.hx", lineNumber : 74, className : "pages.AddPage", methodName : "addRecipe", customParams : [response1]});
 		});
+	}
+	,generateSteps: function() {
+		var widgets = [];
+		var _g = 0;
+		var _g1 = this.stepAmount;
+		while(_g < _g1) {
+			var i = _g++;
+			var controller = new com_vige_components_InputController();
+			if(i >= this.stepControllers.length) {
+				this.stepControllers.push(controller);
+			} else {
+				controller = this.stepControllers[i];
+			}
+			widgets.push(new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : controller, placeholder : "Steg " + (i + 1), value : controller.getValue(), size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}));
+		}
+		return widgets;
 	}
 	,component: function() {
 		var _gthis = this;
@@ -5299,8 +5321,24 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var tmp4 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
 		var tmp5 = new com_vige_support_Fonts("Poppins","sans-serif");
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ navbar : tmp, route : "/add", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.nameInputController, placeholder : "Navn på oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.categoryInputController, placeholder : "Kategori", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.urlInputController, placeholder : "Link til oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.tagsInputController, placeholder : "Stikkord", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Legg til"), onClick : function() {
-			haxe_Log.trace("Added",{ fileName : "src/pages/AddPage.hx", lineNumber : 171, className : "pages.AddPage", methodName : "component"});
+		var tmp6 = new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})});
+		var tmp7 = new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.nameInputController, placeholder : "Navn på oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})});
+		var tmp8 = new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.categoryInputController, placeholder : "Kategori", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})});
+		var tmp9 = new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Row({ flex : true, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : [new com_vige_components_Text("Link?",{ size : new com_vige_utils_Size({ width : "10px"})}),new com_vige_components_Input({ type : com_vige_support_InputType.Checkbox, controller : this.linkInputController, placeholder : "Stikkord", size : new com_vige_utils_Size({ width : "10px"})})], mainAxisAlignment : com_vige_support_MainAxisAlignment.Left})})});
+		var tmp10 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
+		var tmp11 = new com_vige_support_Fonts("Poppins","sans-serif");
+		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+		var tmp12 = new com_vige_components_Container({ padding : tmp10, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("Ingredienser",{ textSize : 20, font : tmp11, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this11})})})});
+		var tmp13 = new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Row({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : [new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.ingredientInputController, placeholder : "Ingrediens"}),new com_vige_components_Container({ size : new com_vige_utils_Size({ width : "20px"})}),new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.amountInputController, placeholder : "Mengde"})]})})});
+		var tmp14 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
+		var tmp15 = new com_vige_support_Fonts("Poppins","sans-serif");
+		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+		this.page = new com_vige_components_Page({ navbar : tmp, route : "/add", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,tmp6,tmp7,tmp8,tmp9,tmp12,tmp13,new com_vige_components_Container({ padding : tmp14, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("Steg",{ textSize : 20, font : tmp15, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this12})})})}),new com_vige_components_Column({ children : this.generateSteps()}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("+"), onClick : function() {
+			_gthis.setState(_gthis,function(e) {
+				_gthis.stepAmount++;
+			});
+		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.urlInputController, placeholder : "Link til oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.tagsInputController, placeholder : "Stikkord", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Legg til"), onClick : function() {
+			haxe_Log.trace("Added",{ fileName : "src/pages/AddPage.hx", lineNumber : 336, className : "pages.AddPage", methodName : "component"});
 			if(_gthis.nameInputController.getValue() == "") {
 				return;
 			}
@@ -5458,15 +5496,15 @@ pages_LoginPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var tmp3 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
 		var tmp4 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this1})});
-		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-		var tmp5 = [tmp4,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this11})})];
-		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		var tmp6 = new com_vige_utils_Color({ backgroundColor : this12});
+		var this2 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+		var tmp5 = [tmp4,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this2})})];
+		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		var tmp6 = new com_vige_utils_Color({ backgroundColor : this3});
 		var tmp7 = new com_vige_utils_Size({ width : "300px"});
 		var tmp8 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
 		var tmp9 = new com_vige_support_Fonts("Poppins","sans-serif");
-		var this13 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ route : "/", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp5, color : tmp6, size : tmp7, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("LOGG INN",{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this13})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Register"), onClick : function() {
+		var this4 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+		this.page = new com_vige_components_Page({ route : "/", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp5, color : tmp6, size : tmp7, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("LOGG INN",{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this4})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Register"), onClick : function() {
 			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 153, className : "pages.LoginPage", methodName : "component"});
 			com_vige_core_Navigate.to({ url : "/register"});
 		}})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Logg inn"), onClick : function() {
@@ -5516,28 +5554,28 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			var tmp7 = new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text(tmp5,{ textSize : 40, font : tmp6, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})});
 			var tmp8 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
 			var tmp9 = this.data.getCategory();
-			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			var tmp10 = new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Text(tmp9,{ color : new com_vige_utils_Color({ color : this11})})})});
+			var this2 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			var tmp10 = new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Text(tmp9,{ color : new com_vige_utils_Color({ color : this2})})})});
 			var tmp11 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
 			var tmp12 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
-			var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-			var tmp13 = new com_vige_utils_Color({ backgroundColor : this12});
+			var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+			var tmp13 = new com_vige_utils_Color({ backgroundColor : this3});
 			var tmp14 = com_vige_utils_Margin.fromTRBL(0,0,20,0);
 			var tmp15 = new com_vige_utils_Size({ width : "100%"});
-			var this13 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp16 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this13})});
-			var this14 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp17 = [tmp16,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this14})})];
+			var this4 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp16 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this4})});
+			var this5 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp17 = [tmp16,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this5})})];
 			var tmp18 = com_vige_utils_Padding.all(20);
 			var tmp19 = new com_vige_components_Image({ src : "./assets/pancake.jpg", height : 100, width : 100});
 			var tmp20 = new com_vige_components_Container({ size : new com_vige_utils_Size({ width : "40px"})});
-			var this15 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			var this6 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
 			var tmp21 = new com_vige_components_Action({ onClick : function() {
 				com_vige_core_Navigate.link({ url : _gthis.data.getUrl()});
-			}, child : new com_vige_components_Container({ color : tmp13, margin : tmp14, size : tmp15, shadow : tmp17, padding : tmp18, child : new com_vige_components_Row({ flex : true, children : [tmp19,tmp20,new com_vige_components_Column({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.Center, children : [new com_vige_components_Row({ children : [new com_vige_components_Text("godt.no",{ color : new com_vige_utils_Color({ color : this15}), textSize : 20})], flex : true, mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpaceAround, equalElementWidth : false, size : new com_vige_utils_Size({ height : "100%"})})]})]})})});
+			}, child : new com_vige_components_Container({ color : tmp13, margin : tmp14, size : tmp15, shadow : tmp17, padding : tmp18, child : new com_vige_components_Row({ flex : true, children : [tmp19,tmp20,new com_vige_components_Column({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.Center, children : [new com_vige_components_Row({ children : [new com_vige_components_Text("godt.no",{ color : new com_vige_utils_Color({ color : this6}), textSize : 20})], flex : true, mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpaceAround, equalElementWidth : false, size : new com_vige_utils_Size({ height : "100%"})})]})]})})});
 			var tmp22 = this.data.getTags();
-			var this16 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,tmp7,tmp10,new com_vige_components_Container({ padding : tmp11, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : tmp12, children : [tmp21,new com_vige_components_Text(tmp22,{ color : new com_vige_utils_Color({ color : this16})})]})})})]})});
+			var this7 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,tmp7,tmp10,new com_vige_components_Container({ padding : tmp11, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : tmp12, children : [tmp21,new com_vige_components_Text(tmp22,{ color : new com_vige_utils_Color({ color : this7})})]})})})]})});
 			return this.page;
 		} else {
 			this.page = new com_vige_components_Page({ navbar : new components_CustomNavbar().navbarComponent(), route : "/recipe/:id", child : new com_vige_components_Column({ children : [new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})})]})});
@@ -5609,13 +5647,13 @@ pages_RegisterPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,
 		var tmp3 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#808080",1,null));
 		var tmp4 = [new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "8px", color : new com_vige_utils_Color({ backgroundColor : this1})})];
-		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		var tmp5 = new com_vige_utils_Color({ backgroundColor : this11});
+		var this2 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		var tmp5 = new com_vige_utils_Color({ backgroundColor : this2});
 		var tmp6 = new com_vige_utils_Size({ width : "300px"});
 		var tmp7 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
 		var tmp8 = new com_vige_support_Fonts("Poppins","sans-serif");
-		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ route : "/register", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp4, color : tmp5, size : tmp6, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY BRUKER",{ textSize : 40, font : tmp8, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this12})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.retypePasswordInputController, placeholder : "Gjenta Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Allerede bruker?"), onClick : function() {
+		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+		this.page = new com_vige_components_Page({ route : "/register", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp4, color : tmp5, size : tmp6, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY BRUKER",{ textSize : 40, font : tmp8, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this3})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.retypePasswordInputController, placeholder : "Gjenta Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Allerede bruker?"), onClick : function() {
 			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 180, className : "pages.RegisterPage", methodName : "component"});
 			com_vige_core_Navigate.to({ url : "/login"});
 		}})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Registrer"), onClick : function() {
