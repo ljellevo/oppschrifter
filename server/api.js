@@ -141,7 +141,7 @@ module.exports = function(app) {
         var database = new Database();
         database.query(function(client) {
           const collection = client.db("oppschrifter").collection("recipes");
-          collection.find({tags: {$regex : new RegExp(".*" + query + ".*", "i")}}).sort(mostViewed).toArray(function(err, result) {
+          collection.find({dbTags: {$regex : new RegExp(".*" + query + ".*", "i")}}).sort(mostViewed).toArray(function(err, result) {
             if(err) console.log(err);
             console.log(result)
             res.send(result);

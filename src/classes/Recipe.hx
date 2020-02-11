@@ -6,6 +6,7 @@ class Recipe {
   var category: String;
   var url: String;
   var tags: String;
+  var dbTags: String;
   var uploaded: Float;
   var viewed: Int;
   
@@ -14,7 +15,8 @@ class Recipe {
     this.name = name;
     this.category = category;
     this.url = url;
-    this.tags = tags + " " + name + " " + category;
+    this.tags = tags;
+    this.dbTags = tags;
     this.uploaded = uploaded != null ? uploaded : Date.now().getTime();
     this.viewed = viewed != null ? viewed : 0;
   }
@@ -40,6 +42,10 @@ class Recipe {
     return tags;
   }
 
+  public function getUploaded(): Float {
+    return uploaded;
+  }
+
   public function getViewed(): Int {
     return viewed;
   }
@@ -54,6 +60,7 @@ class Recipe {
       category: category,
       url: url,
       tags: tags,
+      dbTags: tags + " " + name + " " + category,
       uploaded: uploaded,
       viewed: viewed
     };
