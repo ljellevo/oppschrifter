@@ -1,5 +1,15 @@
 package classes;
 
+typedef RecipeStruct = {
+  _id: String,
+  name: String,
+  category: String,
+  url: String,
+  tags: String,
+  uploaded: Float,
+  viewed: Int
+} 
+
 class Recipe {
   var id: String;
   var name: String;
@@ -10,7 +20,9 @@ class Recipe {
   var uploaded: Float;
   var viewed: Int;
   
-  public function new(name: String, category: String, url: String, tags: String, ?id: String, ?uploaded: Float, ?viewed: Int) {
+  public function new() { }
+
+  public function constr(name: String, category: String, url: String, tags: String, ?id: String, ?uploaded: Float, ?viewed: Int) {
     this.id = id;
     this.name = name;
     this.category = category;

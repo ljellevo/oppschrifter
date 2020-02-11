@@ -2,8 +2,6 @@ package pages;
 
 import haxe.Json;
 import haxe.Http;
-import com.akifox.asynchttp.HttpMethod;
-import com.akifox.asynchttp.HttpResponse;
 import com.vige.support.Enums.FontWeight;
 import com.vige.support.Enums.InputType;
 import com.vige.support.Enums.CenterAlignment;
@@ -188,7 +186,8 @@ class AddPage extends DynamicComponent {
                     return;
                   }
 
-                  newRecipe = new Recipe(nameInputController.getValue(), categoryInputController.getValue(), urlInputController.getValue(), tagsInputController.getValue());
+                  newRecipe = new Recipe();
+                  newRecipe.constr(nameInputController.getValue(), categoryInputController.getValue(), urlInputController.getValue(), tagsInputController.getValue());
                   
                   //newRecipe = new Recipe("Pasta Carbonara", "Italiensk", "http://oppskrifter.no", "middag pasta italiensk kjapp");
                   addRecipe();

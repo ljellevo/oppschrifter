@@ -1,5 +1,4 @@
 import haxe.Http;
-import haxe.Json;
 import js.Cookie;
 import pages.*;
 import js.Browser;

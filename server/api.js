@@ -10,7 +10,10 @@ module.exports = function(app) {
   var oldestFirst = {uploaded: 1};
 
 
-
+  /**
+   * Authenticates cookie
+   * @returns Bool
+   */
   app.post('/api/auth', function(req, res){
     if(!req.headers.cookie) {
       res.send(false);
@@ -34,7 +37,8 @@ module.exports = function(app) {
   });
 
   /**
-   * Not done
+   * Authenticates user
+   * @returns JWT token
    */
   app.post('/api/login', function(req, res){
    var username = req.body.username;
@@ -58,7 +62,8 @@ module.exports = function(app) {
   }); 
 
   /**
-   * Not done
+   * Registrates user
+   * @returns JWT Token
    */
   app.post('/api/register', function(req, res){
     var username = req.body.username;
@@ -104,6 +109,11 @@ module.exports = function(app) {
     });
   });
 
+  /**
+   * Authenticates request by validating token in header of HTTP request
+   * @param {*} request 
+   * @param {*} callback 
+   */
   function authenticateRequest(request, callback) {
     if(!request.headers.cookie) {
       console.log("No header")
@@ -129,10 +139,11 @@ module.exports = function(app) {
     });
   }
 
-  /**
-   * Get result from search with query
-   */
-  app.get('/api/recipe/:query', function(req, res){
+ /**
+  * Finds recipes that is found with a given query, need to filter on user
+  * @returns JSON object with results
+  */
+  app.get('/api/recipes/:query', function(req, res){
     var query = req.params.query;
     authenticateRequest(req, function(result) {
       if(result != null) {
@@ -155,9 +166,10 @@ module.exports = function(app) {
   });
 
   /**
-   * Get all, sorted by newest first
+   * Finds all registrated recipes, need to filter on user
+   * @returns JSON object with result
    */
-  app.get('/api/recipe/', function(req, res){
+  app.get('/api/recipes/', function(req, res){
     authenticateRequest(req, function(result) {
       if(result != null) {
         console.log("Is request authnticated?: " + result);
@@ -177,6 +189,35 @@ module.exports = function(app) {
     });
   });
 
+
+  /**
+   * Finds specific recipe, need to filter on user
+   * @returns JSON object with result
+   */
+  app.get('/api/recipe/:id', function(req, res){
+    authenticateRequest(req, function(result) {
+      if(result != null) {
+        console.log("Is request authnticated?: " + result);
+        var database = new Database();
+        database.query(function(client) {
+          const collection = client.db("oppschrifter").collection("recipes");
+          collection.findOne({_id: new ObjcetId(req.params.id)}, function(err, result) {
+            if(err) console.log(err);
+            console.log(result)
+            res.send(result);
+          })
+        });
+      } else {
+        res.statusMessage = "Not authenticated";
+        res.status(403).end();
+      }
+    });
+  });
+
+  /**
+   * Adds new recipe to db, needs to add user as uploader
+   * @returns status
+   */
   app.post('/api/recipe', function(req, res){
     authenticateRequest(req, function(result) {
       if(result != null) {

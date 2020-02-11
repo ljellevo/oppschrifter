@@ -95,7 +95,7 @@ Main.main = function() {
 			req.request(true);
 		};
 		request(function(response1) {
-			haxe_Log.trace("Got the response via callback",{ fileName : "src/Main.hx", lineNumber : 28, className : "Main", methodName : "main", customParams : [response1]});
+			haxe_Log.trace("Got the response via callback",{ fileName : "src/Main.hx", lineNumber : 27, className : "Main", methodName : "main", customParams : [response1]});
 			if(response1 == "true") {
 				callback(response1);
 			}
@@ -447,19 +447,21 @@ Xml.prototype = {
 	}
 	,__class__: Xml
 };
-var classes_Recipe = function(name,category,url,tags,id,uploaded,viewed) {
-	this.id = id;
-	this.name = name;
-	this.category = category;
-	this.url = url;
-	this.tags = tags;
-	this.dbTags = tags;
-	this.uploaded = uploaded != null ? uploaded : new Date().getTime();
-	this.viewed = viewed != null ? viewed : 0;
+var classes_Recipe = function() {
 };
 classes_Recipe.__name__ = "classes.Recipe";
 classes_Recipe.prototype = {
-	getId: function() {
+	constr: function(name,category,url,tags,id,uploaded,viewed) {
+		this.id = id;
+		this.name = name;
+		this.category = category;
+		this.url = url;
+		this.tags = tags;
+		this.dbTags = tags;
+		this.uploaded = uploaded != null ? uploaded : new Date().getTime();
+		this.viewed = viewed != null ? viewed : 0;
+	}
+	,getId: function() {
 		return this.id;
 	}
 	,getName: function() {
@@ -2083,7 +2085,6 @@ com_vige_components_Row.prototype = {
 			new com_vige_support_StyleManager().addStyleToDiv({ widget : row, color : this.color, border : this.border, padding : this.padding, margin : this.margin, size : this.size, mainAxisAlignment : this.mainAxisAlignment, crossAxisAlignment : this.crossAxisAlignment, type : com_vige_support_DivType.Row, overflow : this.overflow, shadow : this.shadow});
 			row.style.display = "flex";
 			row.style.width = "100%";
-			row.style.height = "100%";
 			var _g = 0;
 			var _g1 = this.children;
 			while(_g < _g1.length) {
@@ -5286,7 +5287,7 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			req.request(true);
 		};
 		testFunc(this.newRecipe.toJSON(),function(response1) {
-			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/AddPage.hx", lineNumber : 69, className : "pages.AddPage", methodName : "addRecipe", customParams : [response1]});
+			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/AddPage.hx", lineNumber : 67, className : "pages.AddPage", methodName : "addRecipe", customParams : [response1]});
 		});
 	}
 	,component: function() {
@@ -5299,7 +5300,7 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var tmp5 = new com_vige_support_Fonts("Poppins","sans-serif");
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
 		this.page = new com_vige_components_Page({ navbar : tmp, route : "/add", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.nameInputController, placeholder : "Navn på oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.categoryInputController, placeholder : "Kategori", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.urlInputController, placeholder : "Link til oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.tagsInputController, placeholder : "Stikkord", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Legg til"), onClick : function() {
-			haxe_Log.trace("Added",{ fileName : "src/pages/AddPage.hx", lineNumber : 173, className : "pages.AddPage", methodName : "component"});
+			haxe_Log.trace("Added",{ fileName : "src/pages/AddPage.hx", lineNumber : 171, className : "pages.AddPage", methodName : "component"});
 			if(_gthis.nameInputController.getValue() == "") {
 				return;
 			}
@@ -5312,11 +5313,8 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			if(_gthis.tagsInputController.getValue() == "") {
 				return;
 			}
-			var tmp6 = _gthis.nameInputController.getValue();
-			var tmp7 = _gthis.categoryInputController.getValue();
-			var tmp8 = _gthis.urlInputController.getValue();
-			var tmp9 = _gthis.tagsInputController.getValue();
-			_gthis.newRecipe = new classes_Recipe(tmp6,tmp7,tmp8,tmp9);
+			_gthis.newRecipe = new classes_Recipe();
+			_gthis.newRecipe.constr(_gthis.nameInputController.getValue(),_gthis.categoryInputController.getValue(),_gthis.urlInputController.getValue(),_gthis.tagsInputController.getValue());
 			_gthis.addRecipe();
 		}})})})]})});
 		return this.page;
@@ -5333,15 +5331,18 @@ pages_HomePage.__super__ = com_vige_core_DynamicComponent;
 pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 	getRecipe: function(callback) {
 		var _gthis = this;
-		new com_vige_core_SingleRequest({ url : "http://localhost:3000/api/recipe/" + this.searchInputController.getValue(), method : "GET", onComplete : function(res) {
+		new com_vige_core_SingleRequest({ url : "http://localhost:3000/api/recipes/" + this.searchInputController.getValue(), method : "GET", onComplete : function(res) {
 			_gthis.setState(_gthis,function() {
+				haxe_Log.trace(res.get_content(),{ fileName : "src/pages/HomePage.hx", lineNumber : 38, className : "pages.HomePage", methodName : "getRecipe"});
 				var value = JSON.parse(res.get_content());
 				var recipes = [];
 				var _g = 0;
 				var _g1 = value.length;
 				while(_g < _g1) {
 					var i = _g++;
-					recipes.push(new classes_Recipe(value[i].name,value[i].category,value[i].url,value[i].tags,value[i]._id,value[i].uploaded,value[i].viewed));
+					var newRecipe = new classes_Recipe();
+					newRecipe.constr(value[i].name,value[i].category,value[i].url,value[i].tags,value[i]._id,value[i].uploaded,value[i].viewed);
+					recipes.push(newRecipe);
 				}
 				_gthis.data = recipes;
 			});
@@ -5355,7 +5356,7 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			if(e.keyCode == 13) {
 				_gthis.currentValue = _gthis.searchInputController.getValue();
 				_gthis.getRecipe(function(token) {
-					haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 114, className : "pages.HomePage", methodName : "component"});
+					haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 72, className : "pages.HomePage", methodName : "component"});
 				});
 			}
 		});
@@ -5368,10 +5369,10 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
 		this.page = new com_vige_components_Page({ navbar : tmp, route : "/", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("OPPSCHRIFTER",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.searchInputController, placeholder : "Søk etter oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), value : this.currentValue, onchange : function() {
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Search"), onClick : function() {
-			haxe_Log.trace("Search was clicked",{ fileName : "src/pages/HomePage.hx", lineNumber : 184, className : "pages.HomePage", methodName : "component"});
+			haxe_Log.trace("Search was clicked",{ fileName : "src/pages/HomePage.hx", lineNumber : 142, className : "pages.HomePage", methodName : "component"});
 			_gthis.currentValue = _gthis.searchInputController.getValue();
 			_gthis.getRecipe(function(token1) {
-				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 187, className : "pages.HomePage", methodName : "component"});
+				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 145, className : "pages.HomePage", methodName : "component"});
 			});
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : com_vige_components_Constructors.constructRows({ data : this.data, elementsInEachRow : 1, elementBuilder : function(iterator) {
 			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
@@ -5427,7 +5428,7 @@ pages_LoginPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 				callback1(response);
 			};
 			req.onError = function(error) {
-				haxe_Log.trace(error,{ fileName : "src/pages/LoginPage.hx", lineNumber : 49, className : "pages.LoginPage", methodName : "login"});
+				haxe_Log.trace(error,{ fileName : "src/pages/LoginPage.hx", lineNumber : 46, className : "pages.LoginPage", methodName : "login"});
 				_gthis.setState(_gthis,function() {
 					_gthis.errorMessage = error;
 				});
@@ -5435,7 +5436,7 @@ pages_LoginPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			req.request(true);
 		};
 		request(this.usernameInputController.getValue(),this.passwordInputController.getValue(),function(response1) {
-			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/LoginPage.hx", lineNumber : 58, className : "pages.LoginPage", methodName : "login", customParams : [response1]});
+			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/LoginPage.hx", lineNumber : 55, className : "pages.LoginPage", methodName : "login", customParams : [response1]});
 			js_Cookie.set("credentials",response1,315569260);
 			com_vige_core_Navigate.to({ url : "/"});
 			window.location.reload();
@@ -5466,12 +5467,12 @@ pages_LoginPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var tmp9 = new com_vige_support_Fonts("Poppins","sans-serif");
 		var this13 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
 		this.page = new com_vige_components_Page({ route : "/", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp5, color : tmp6, size : tmp7, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("LOGG INN",{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this13})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Register"), onClick : function() {
-			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 156, className : "pages.LoginPage", methodName : "component"});
+			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 153, className : "pages.LoginPage", methodName : "component"});
 			com_vige_core_Navigate.to({ url : "/register"});
 		}})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Logg inn"), onClick : function() {
-			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 166, className : "pages.LoginPage", methodName : "component"});
+			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 163, className : "pages.LoginPage", methodName : "component"});
 			_gthis.login(function(token) {
-				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/LoginPage.hx", lineNumber : 168, className : "pages.LoginPage", methodName : "component"});
+				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/LoginPage.hx", lineNumber : 165, className : "pages.LoginPage", methodName : "component"});
 			});
 		}})})]})})]})})})]})});
 		return this.page;
@@ -5480,22 +5481,68 @@ pages_LoginPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 });
 var pages_RecipePage = function() {
 	this.searchInputController = new com_vige_components_InputController();
-	this.data = [];
 	com_vige_core_DynamicComponent.call(this);
 };
 pages_RecipePage.__name__ = "pages.RecipePage";
 pages_RecipePage.__super__ = com_vige_core_DynamicComponent;
 pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
-	component: function() {
-		var tmp = new components_CustomNavbar().navbarComponent();
-		var tmp1 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-		var tmp2 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-		var tmp3 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-		var tmp4 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
-		var tmp5 = new com_vige_support_Fonts("Poppins","sans-serif");
-		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("RECIPE",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})})]})});
-		return this.page;
+	init: function() {
+		this.getRecipe();
+	}
+	,getRecipe: function() {
+		var _gthis = this;
+		new com_vige_core_SingleRequest({ url : "http://localhost:3000/api/recipe/" + com_vige_core_Navigate.getParameters()[0], method : "GET", onComplete : function(res) {
+			_gthis.setState(_gthis,function() {
+				var value = JSON.parse(res.get_content());
+				var recipe = new classes_Recipe();
+				recipe.constr(value.name,value.category,value.url,value.tags,value._id,value.uploaded,value.viewed);
+				_gthis.data = recipe;
+			});
+		}, onProgress : function() {
+		}, onError : function(error) {
+		}}).request();
+	}
+	,component: function() {
+		var _gthis = this;
+		if(this.data != null) {
+			var tmp = new components_CustomNavbar().navbarComponent();
+			var tmp1 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
+			var tmp2 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
+			var tmp3 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
+			var tmp4 = com_vige_utils_Padding.fromTRBL(30,0,0,0);
+			var tmp5 = this.data.getName() != null ? this.data.getName() : "";
+			var tmp6 = new com_vige_support_Fonts("Poppins","sans-serif");
+			var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			var tmp7 = new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text(tmp5,{ textSize : 40, font : tmp6, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})});
+			var tmp8 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
+			var tmp9 = this.data.getCategory();
+			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			var tmp10 = new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Text(tmp9,{ color : new com_vige_utils_Color({ color : this11})})})});
+			var tmp11 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
+			var tmp12 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
+			var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+			var tmp13 = new com_vige_utils_Color({ backgroundColor : this12});
+			var tmp14 = com_vige_utils_Margin.fromTRBL(0,0,20,0);
+			var tmp15 = new com_vige_utils_Size({ width : "100%"});
+			var this13 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp16 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this13})});
+			var this14 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp17 = [tmp16,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this14})})];
+			var tmp18 = com_vige_utils_Padding.all(20);
+			var tmp19 = new com_vige_components_Image({ src : "./assets/pancake.jpg", height : 100, width : 100});
+			var tmp20 = new com_vige_components_Container({ size : new com_vige_utils_Size({ width : "40px"})});
+			var this15 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			var tmp21 = new com_vige_components_Action({ onClick : function() {
+				com_vige_core_Navigate.link({ url : _gthis.data.getUrl()});
+			}, child : new com_vige_components_Container({ color : tmp13, margin : tmp14, size : tmp15, shadow : tmp17, padding : tmp18, child : new com_vige_components_Row({ flex : true, children : [tmp19,tmp20,new com_vige_components_Column({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.Center, children : [new com_vige_components_Row({ children : [new com_vige_components_Text("godt.no",{ color : new com_vige_utils_Color({ color : this15}), textSize : 20})], flex : true, mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpaceAround, equalElementWidth : false, size : new com_vige_utils_Size({ height : "100%"})})]})]})})});
+			var tmp22 = this.data.getTags();
+			var this16 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,tmp7,tmp10,new com_vige_components_Container({ padding : tmp11, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : tmp12, children : [tmp21,new com_vige_components_Text(tmp22,{ color : new com_vige_utils_Color({ color : this16})})]})})})]})});
+			return this.page;
+		} else {
+			this.page = new com_vige_components_Page({ navbar : new components_CustomNavbar().navbarComponent(), route : "/recipe/:id", child : new com_vige_components_Column({ children : [new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})})]})});
+			return this.page;
+		}
 	}
 	,__class__: pages_RecipePage
 });
@@ -5525,7 +5572,7 @@ pages_RegisterPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,
 		}
 		var testFunc = function(username,password,callback1) {
 			var sha = haxe_crypto_Sha256.encode(password);
-			haxe_Log.trace(sha,{ fileName : "src/pages/RegisterPage.hx", lineNumber : 46, className : "pages.RegisterPage", methodName : "login"});
+			haxe_Log.trace(sha,{ fileName : "src/pages/RegisterPage.hx", lineNumber : 44, className : "pages.RegisterPage", methodName : "login"});
 			object = { username : username, password : sha};
 			req.setHeader("Content-type","application/json");
 			var testFunc1 = JSON.stringify(object);
@@ -5534,7 +5581,7 @@ pages_RegisterPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,
 				callback1(response);
 			};
 			req.onError = function(error) {
-				haxe_Log.trace(error,{ fileName : "src/pages/RegisterPage.hx", lineNumber : 63, className : "pages.RegisterPage", methodName : "login"});
+				haxe_Log.trace(error,{ fileName : "src/pages/RegisterPage.hx", lineNumber : 61, className : "pages.RegisterPage", methodName : "login"});
 				_gthis.setState(_gthis,function() {
 					_gthis.errorMessage = error;
 				});
@@ -5542,7 +5589,7 @@ pages_RegisterPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,
 			req.request(true);
 		};
 		testFunc(this.usernameInputController.getValue(),this.passwordInputController.getValue(),function(response1) {
-			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 72, className : "pages.RegisterPage", methodName : "login", customParams : [response1]});
+			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 70, className : "pages.RegisterPage", methodName : "login", customParams : [response1]});
 			js_Cookie.set("credentials",response1,315569260);
 		});
 	}
@@ -5569,12 +5616,12 @@ pages_RegisterPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,
 		var tmp8 = new com_vige_support_Fonts("Poppins","sans-serif");
 		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
 		this.page = new com_vige_components_Page({ route : "/register", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp4, color : tmp5, size : tmp6, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY BRUKER",{ textSize : 40, font : tmp8, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this12})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.retypePasswordInputController, placeholder : "Gjenta Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Allerede bruker?"), onClick : function() {
-			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 182, className : "pages.RegisterPage", methodName : "component"});
+			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 180, className : "pages.RegisterPage", methodName : "component"});
 			com_vige_core_Navigate.to({ url : "/login"});
 		}})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Registrer"), onClick : function() {
-			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 192, className : "pages.RegisterPage", methodName : "component"});
+			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 190, className : "pages.RegisterPage", methodName : "component"});
 			_gthis.login(function(token) {
-				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 194, className : "pages.RegisterPage", methodName : "component"});
+				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 192, className : "pages.RegisterPage", methodName : "component"});
 			});
 		}})})]})})]})})})]})});
 		return this.page;

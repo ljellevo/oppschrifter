@@ -3,11 +3,9 @@ package pages;
 import js.Cookie;
 import haxe.Json;
 import haxe.Http;
-import com.vige.support.Enums.CrossAxisAlignment;
 import com.vige.support.Enums.FontWeight;
 import com.vige.support.Enums.InputType;
 import com.vige.support.Enums.CenterAlignment;
-import components.*;
 
 import com.vige.components.*;
 import com.vige.components.Input.InputController;

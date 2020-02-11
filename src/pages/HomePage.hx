@@ -3,14 +3,10 @@ package pages;
 import com.vige.support.Enums.TextAlign;
 import js.Browser;
 import js.html.KeyboardEvent;
-import js.html.KeyboardEventInit;
-import js.html.EventInit;
-import js.html.Event;
 import com.vige.support.Enums.MainAxisAlignment;
 import classes.Recipe;
 import com.akifox.asynchttp.HttpResponse;
 import haxe.Json;
-import haxe.Http;
 import com.vige.support.Enums.CrossAxisAlignment;
 import com.vige.support.Enums.FontWeight;
 import com.vige.support.Enums.InputType;
@@ -23,18 +19,6 @@ import com.vige.core.*;
 import com.vige.utils.*;
 import com.vige.support.*;
 
-typedef RecipeStruct = {
-  _id: String,
-  name: String,
-  category: String,
-  url: String,
-  tags: String,
-  uploaded: Float,
-  viewed: Int
-} 
-
-
-
 
 class HomePage extends DynamicComponent {
   var data: Array<Recipe> = [];
@@ -45,54 +29,28 @@ class HomePage extends DynamicComponent {
 
   
   function getRecipe(callback:String->Void){
-    /*
-    var object:Dynamic;
-    var req = new Http( "http://localhost:3000/api/recipe/all");
 
-    function request(callback:Array<RecipeStruct>->Void):Void  {
-      object = {search: ""};
-
-      req.setHeader ("Content-type", "application/json");   
-      req.setPostData(Json.stringify(object));
-        
-      req.onData = function(response:String) {
-        var recipes = [];
-        var value: Array<RecipeStruct> = Json.parse(response);
-
-        
-        callback( value );
-      }
-      
-      req.request( true ); 	
-    }
-
-    request(function(value: Array<RecipeStruct>){
-      trace("Got the response via callback", value);
-      setState(this, function() {
-        data = value;
-      });
-    });
-    */
     new SingleRequest({
-      url: "http://localhost:3000/api/recipe/" + searchInputController.getValue(),
+      url: "http://localhost:3000/api/recipes/" + searchInputController.getValue(),
       method: "GET",
       onComplete: function(res: HttpResponse) {
         setState(this, function(){
+          trace(res.content);
           var value: Array<RecipeStruct> = Json.parse(res.content);
           
           var recipes = [];
           for(i in 0...value.length) {
-            recipes.push(
-              new Recipe(
-                value[i].name, 
-                value[i].category,
-                value[i].url,
-                value[i].tags,
-                value[i]._id,
-                value[i].uploaded,
-                value[i].viewed
-              )
+            var newRecipe = new Recipe();
+            newRecipe.constr(
+              value[i].name, 
+              value[i].category,
+              value[i].url,
+              value[i].tags,
+              value[i]._id,
+              value[i].uploaded,
+              value[i].viewed
             );
+            recipes.push(newRecipe);
           } 
           data = recipes;         
         });
