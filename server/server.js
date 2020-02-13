@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+var enforce = require('express-sslify');
 
 var path = require('path');
 
@@ -10,6 +11,8 @@ app.use(cors())
 app.use(express.json());
 app.use(express.static('bin'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(enforce.HTTPS({ trustProtoHeader: true }))
+
 
 const api = require("./api")(app);  
 
