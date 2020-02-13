@@ -1,0 +1,6 @@
+{
+  "config": {
+      "url": "mongodb+srv://admin:erzDCAICD4NBnzsE@cluster0-qh0ea.mongodb.net/test?retryWrites=true&w=majority",
+      "temp": "erzDCAICD4NBnzsE"
+  }
+}

@@ -1,9 +1,5 @@
 package pages;
 
-import js.html.Request;
-import haxe.http.HttpMethod;
-import haxe.io.BytesOutput;
-import haxe.Http;
 import js.Browser;
 import com.vige.support.Enums.TextAlign;
 import com.vige.support.Enums.MainAxisAlignment;
