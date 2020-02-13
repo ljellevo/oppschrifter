@@ -5831,8 +5831,8 @@ Object.defineProperty(js__$Boot_HaxeError.prototype,"message",{ get : function()
 }});
 js_Boot.__toStr = ({ }).toString;
 Config.API_AUTH = "https://oppschrifter.herokuapp.com/api/auth";
-Config.API_REGISTER = "http://localhost:3000/api/register";
-Config.API_LOGIN = "http://localhost:3000/api/login";
+Config.API_REGISTER = "https://oppschrifter.herokuapp.com/api/register";
+Config.API_LOGIN = "https://oppschrifter.herokuapp.com/api/login";
 Xml.Element = 0;
 Xml.PCData = 1;
 Xml.CData = 2;
