@@ -15,7 +15,7 @@ class Main {
 
     function auth(callback:String->Void){
       var object:Dynamic;
-      var req = new Http( "https://oppschrifter.herokuapp.com/api/auth");
+      var req = new Http(Config.API_AUTH);
   
       function request(callback:String->Void):Void  {
         req.setHeader("Authorization", "Bearer" + Cookie.get("credentials"));          

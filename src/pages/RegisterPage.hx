@@ -25,7 +25,7 @@ class RegisterPage extends DynamicComponent {
 
   function login(callback:String->Void){
     var object:Dynamic;
-    var req = new Http( "http://localhost:3000/api/register");
+    var req = new Http( Config.API_REGISTER);
 
     if(usernameInputController.getValue() == "") {
       return;

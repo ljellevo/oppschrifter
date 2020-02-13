@@ -7,6 +7,8 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
+var Config = function() { };
+Config.__name__ = "Config";
 var EReg = function(r,opt) {
 	this.r = new RegExp(r,opt.split("u").join(""));
 };
@@ -85,7 +87,7 @@ Main.main = function() {
 	body.setGlobalTitle("OPPSCHRIFTER");
 	var auth = function(callback) {
 		var object;
-		var req = new haxe_http_HttpJs("https://oppschrifter.herokuapp.com/api/auth");
+		var req = new haxe_http_HttpJs(Config.API_AUTH);
 		var request = function(callback1) {
 			var request1 = "Bearer" + js_Cookie.get("credentials");
 			req.setHeader("Authorization",request1);
@@ -5544,7 +5546,7 @@ pages_LoginPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 	login: function(callback) {
 		var _gthis = this;
 		var object;
-		var req = new haxe_http_HttpJs("http://localhost:3000/api/login");
+		var req = new haxe_http_HttpJs(Config.API_LOGIN);
 		if(this.usernameInputController.getValue() == "" || this.passwordInputController.getValue() == "") {
 			return;
 		}
@@ -5740,7 +5742,7 @@ pages_RegisterPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,
 	login: function(callback) {
 		var _gthis = this;
 		var object;
-		var req = new haxe_http_HttpJs("http://localhost:3000/api/register");
+		var req = new haxe_http_HttpJs(Config.API_REGISTER);
 		if(this.usernameInputController.getValue() == "") {
 			return;
 		}
@@ -5789,13 +5791,13 @@ pages_RegisterPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,
 		var tmp3 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#808080",1,null));
 		var tmp4 = [new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "8px", color : new com_vige_utils_Color({ backgroundColor : this1})})];
-		var this2 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		var tmp5 = new com_vige_utils_Color({ backgroundColor : this2});
+		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		var tmp5 = new com_vige_utils_Color({ backgroundColor : this11});
 		var tmp6 = new com_vige_utils_Size({ width : "300px"});
 		var tmp7 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
 		var tmp8 = new com_vige_support_Fonts("Poppins","sans-serif");
-		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ route : "/register", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp4, color : tmp5, size : tmp6, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY BRUKER",{ textSize : 40, font : tmp8, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this3})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.retypePasswordInputController, placeholder : "Gjenta Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Allerede bruker?"), onClick : function() {
+		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+		this.page = new com_vige_components_Page({ route : "/register", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp4, color : tmp5, size : tmp6, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY BRUKER",{ textSize : 40, font : tmp8, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this12})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.retypePasswordInputController, placeholder : "Gjenta Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Allerede bruker?"), onClick : function() {
 			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 180, className : "pages.RegisterPage", methodName : "component"});
 			com_vige_core_Navigate.to({ url : "/login"});
 		}})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Registrer"), onClick : function() {
@@ -5828,6 +5830,9 @@ Object.defineProperty(js__$Boot_HaxeError.prototype,"message",{ get : function()
 	return String(this.val);
 }});
 js_Boot.__toStr = ({ }).toString;
+Config.API_AUTH = "https://oppschrifter.herokuapp.com/api/auth";
+Config.API_REGISTER = "http://localhost:3000/api/register";
+Config.API_LOGIN = "http://localhost:3000/api/login";
 Xml.Element = 0;
 Xml.PCData = 1;
 Xml.CData = 2;
