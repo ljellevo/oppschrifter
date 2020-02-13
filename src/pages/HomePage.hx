@@ -35,7 +35,7 @@ class HomePage extends DynamicComponent {
   function getRecipe(callback:String->Void){
 
     new SingleRequest({
-      url: "http://localhost:3000/api/recipes/" + searchInputController.getValue(),
+      url: Config.API_RECIPE + searchInputController.getValue(),
       method: "GET",
       onComplete: function(res: HttpResponse) {
         setState(this, function(){

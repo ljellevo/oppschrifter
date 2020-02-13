@@ -31,7 +31,7 @@ class RecipePage extends DynamicComponent {
 
   function getRecipe(){
     new SingleRequest({
-      url: "http://localhost:3000/api/recipe/" + Navigate.getParameters()[0],
+      url: Config.API_RECIPE_GET + Navigate.getParameters()[0],
       method: "GET",
       onComplete: function(res: HttpResponse) {
         setState(this, function(){
@@ -62,7 +62,7 @@ class RecipePage extends DynamicComponent {
 
   function deleteRecipe(){
     new SingleRequest({
-      url: "http://localhost:3000/api/recipe/" + Navigate.getParameters()[0] + "/delete",
+      url: Config.API_RECIPE_DELETE + Navigate.getParameters()[0] + "/delete",
       method: "GET",
       onComplete: function(res: HttpResponse) {
         Navigate.to({url: "/", hardRefresh: true});

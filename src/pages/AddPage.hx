@@ -49,7 +49,7 @@ class AddPage extends DynamicComponent {
 
   function addRecipe(){
     var object:Dynamic;
-    var req = new Http( "http://localhost:3000/api/recipe");
+    var req = new Http(Config.API_RECIP_POST);
 
     function testFunc(data:String, callback:String->Void):Void  {
 

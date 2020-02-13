@@ -35,6 +35,6 @@ class DateConverter {
     }
 
 
-    return Std.string(date.getDate()) + " " + monthString + " " + Std.string(date.getUTCFullYear());
+    return Std.string(date.getDate()) + " " + monthString + " " + Std.string(date.getFullYear());
   }
 }
