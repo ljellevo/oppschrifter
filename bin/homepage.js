@@ -3591,7 +3591,7 @@ components_CustomNavbar.prototype = $extend(com_vige_core_DynamicComponent.proto
 			}
 			return null;
 		};
-		var tmp = new com_vige_utils_Size({ height : "40px", width : "90px"});
+		var tmp = new com_vige_utils_Size({ height : "40px", width : "70px"});
 		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
 		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this3}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
 			if(url == "https://github.com/ljellevo/mist.io") {
@@ -3636,7 +3636,7 @@ components_CustomNavbar.prototype = $extend(com_vige_core_DynamicComponent.proto
 	}
 	,navbarComponent: function() {
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		var navbar = new com_vige_components_Navbar({ position : com_vige_support_NavbarPosition.Top, offset : 0, color : new com_vige_utils_Color({ backgroundColor : this1}), child : new com_vige_components_Column({ children : [new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpacedEvenly, margin : com_vige_utils_Margin.fromTRBL(10,0,10,0), children : [this.homepageButton("Oversikt",null,"/"),this.homepageButton("Ny",null,"/add"),this.homepageButton("Tilbakemelding",null,"/feedback"),this.logoutButton("Logg ut",null,"/logout")]})]}), onComplete : function() {
+		var navbar = new com_vige_components_Navbar({ position : com_vige_support_NavbarPosition.Top, offset : 0, color : new com_vige_utils_Color({ backgroundColor : this1}), child : new com_vige_components_Column({ children : [new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpacedEvenly, margin : com_vige_utils_Margin.fromTRBL(10,0,10,0), children : [this.homepageButton("Oversikt",null,"/"),this.homepageButton("Ny",null,"/add"),this.homepageButton("Feedback",null,"/feedback"),this.logoutButton("Logg ut",null,"/logout")]})]}), onComplete : function() {
 		}});
 		return navbar;
 	}

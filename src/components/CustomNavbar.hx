@@ -44,7 +44,7 @@ class CustomNavbar extends DynamicComponent {
     }
 
     return new Button({
-      size: new Size({height: "40px", width: "90px"}),
+      size: new Size({height: "40px", width: "70px"}),
       color: new Color({color: Colors.BLACK, backgroundColor: Colors.fromString("#fafafa")}),
       border: determineBorder(),
       child: new Row({
@@ -164,7 +164,7 @@ new Row({
       children: [
         homepageButton("Oversikt", null, "/"),
         homepageButton("Ny", null, "/add"),
-        homepageButton("Tilbakemelding", null, "/feedback"),
+        homepageButton("Feedback", null, "/feedback"),
         logoutButton("Logg ut", null, "/logout")
       ],
     }),
