@@ -1,0 +1,4 @@
+haxe build.hxml
+git add .
+git commit -m "$@"
+git push heroku master

@@ -501,7 +501,7 @@ com_akifox_asynchttp_AsyncHttp.log = function(message,fingerprint) {
 		fingerprint = "";
 	}
 	if(com_akifox_asynchttp_AsyncHttp.logEnabled) {
-		haxe_Log.trace("${fingerprint} INFO:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "log"});
+		haxe_Log.trace("" + fingerprint + " INFO:" + message,{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 186, className : "com.akifox.asynchttp.AsyncHttp", methodName : "log"});
 	}
 	return message;
 };
@@ -513,10 +513,10 @@ com_akifox_asynchttp_AsyncHttp.error = function(message,fingerprint,throwError) 
 		fingerprint = "";
 	}
 	if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-		haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+		haxe_Log.trace("" + fingerprint + " ERROR:" + message,{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 	}
 	if(throwError) {
-		throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+		throw new js__$Boot_HaxeError("AsyncHttp Error:" + message);
 	}
 	return message;
 };
@@ -543,11 +543,12 @@ com_akifox_asynchttp_AsyncHttp.determineIsBinary = function(contentKind) {
 com_akifox_asynchttp_AsyncHttp.prototype = {
 	send: function(request) {
 		if(request.get_finalised()) {
+			var message = "Unable to send the request:it was already sent before\n" + "To send it again you have to clone it before.";
 			var fingerprint = request.get_fingerprint();
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + fingerprint + " ERROR:" + message,{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + message);
 		}
 		request.finalise();
 		this.httpViaHaxeHttp(request);
@@ -587,11 +588,12 @@ com_akifox_asynchttp_AsyncHttp.prototype = {
 		}
 		var httpstatusDone = false;
 		r.onError = function(msg) {
+			var message = "Request failed -> " + msg;
 			var fingerprint = request.get_fingerprint();
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + fingerprint + " ERROR:" + message,{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			var errorMessage = "Request failed -> $msg";
+			var errorMessage = message;
 			var time = _gthis.elapsedTime(start);
 			headers.finalise();
 			var response = new com_akifox_asynchttp_HttpResponse(request,time,url,headers,status,content,errorMessage);
@@ -608,9 +610,10 @@ com_akifox_asynchttp_AsyncHttp.prototype = {
 			}
 			var time1 = _gthis.elapsedTime(start);
 			content = haxe_io_Bytes.ofString(data);
+			var message1 = "Response Complete " + status + " (" + time1 + " s)\n> " + request.get_method() + " " + Std.string(request.get_url());
 			var fingerprint1 = request.get_fingerprint();
 			if(com_akifox_asynchttp_AsyncHttp.logEnabled) {
-				haxe_Log.trace("${fingerprint} INFO:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "log"});
+				haxe_Log.trace("" + fingerprint1 + " INFO:" + message1,{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 186, className : "com.akifox.asynchttp.AsyncHttp", methodName : "log"});
 			}
 			headers.finalise();
 			var response1 = new com_akifox_asynchttp_HttpResponse(request,time1,url,headers,status,content,"");
@@ -623,9 +626,10 @@ com_akifox_asynchttp_AsyncHttp.prototype = {
 		};
 		r.onStatus = function(http_status) {
 			status = http_status;
+			var message2 = "Response HTTP Status " + status;
 			var fingerprint2 = request.get_fingerprint();
 			if(com_akifox_asynchttp_AsyncHttp.logEnabled) {
-				haxe_Log.trace("${fingerprint} INFO:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "log"});
+				haxe_Log.trace("" + fingerprint2 + " INFO:" + message2,{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 186, className : "com.akifox.asynchttp.AsyncHttp", methodName : "log"});
 			}
 			httpstatusDone = true;
 		};
@@ -727,7 +731,7 @@ com_akifox_asynchttp_HttpHeaders.prototype = {
 	,add: function(key,value) {
 		if(this._finalised) {
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace(" ERROR:" + "HttpHeaders.add() -> Can't add an header. This HttpHeaders object is immutable",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
 			return this;
 		}
@@ -745,7 +749,7 @@ com_akifox_asynchttp_HttpHeaders.prototype = {
 		}
 		if(this._finalised) {
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace(" ERROR:" + "HttpHeaders.remove() -> Can't remove an header. This HttpHeaders object is immutable",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
 			return this;
 		}
@@ -843,11 +847,10 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_headers: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.headers -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.headers -> Can't modify a property when the instance is already sent");
 		}
 		return this._headers = value;
 	}
@@ -856,11 +859,10 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_timeout: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.timeout -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.timeout -> Can't modify a property when the instance is already sent");
 		}
 		if(value < 1) {
 			value = 1;
@@ -872,11 +874,10 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_async: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.async -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.async -> Can't modify a property when the instance is already sent");
 		}
 		return this._async = value;
 	}
@@ -885,11 +886,10 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_http11: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.http11 -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.http11 -> Can't modify a property when the instance is already sent");
 		}
 		return this._http11 = value;
 	}
@@ -908,18 +908,16 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 			v = value.clone();
 			break;
 		default:
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.url -> Please specify an URL Object or a String",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.url -> Please specify an URL Object or a String");
 		}
 		if(this._finalised) {
-			var fingerprint1 = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.url -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.url -> Can't modify a property when the instance is already sent");
 		}
 		return this._url = v;
 	}
@@ -928,11 +926,10 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_method: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.method -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.method -> Can't modify a property when the instance is already sent");
 		}
 		value = com_akifox_asynchttp_HttpMethod.validate(value);
 		return this._method = value;
@@ -942,11 +939,10 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_content: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.content -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.content -> Can't modify a property when the instance is already sent");
 		}
 		return this._content = value;
 	}
@@ -955,11 +951,10 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_contentType: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.contentType -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.contentType -> Can't modify a property when the instance is already sent");
 		}
 		if(value == null) {
 			value = "application/x-www-form-urlencoded";
@@ -972,11 +967,10 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_contentIsBinary: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.contentIsBinary -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.contentIsBinary -> Can't modify a property when the instance is already sent");
 		}
 		return this._contentIsBinary = value;
 	}
@@ -985,11 +979,10 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_callback: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.callback -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.callback -> Can't modify a property when the instance is already sent");
 		}
 		return this._callback = value;
 	}
@@ -998,11 +991,10 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_callbackError: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.callbackError -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.callbackError -> Can't modify a property when the instance is already sent");
 		}
 		return this._callbackError = value;
 	}
@@ -1011,26 +1003,15 @@ com_akifox_asynchttp_HttpRequest.prototype = {
 	}
 	,set_callbackProgress: function(value) {
 		if(this._finalised) {
-			var fingerprint = this._fingerprint;
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + this._fingerprint + " ERROR:" + "HttpRequest.callbackProgress -> Can't modify a property when the instance is already sent",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
-			throw new js__$Boot_HaxeError("AsyncHttp Error:${message}");
+			throw new js__$Boot_HaxeError("AsyncHttp Error:" + "HttpRequest.callbackProgress -> Can't modify a property when the instance is already sent");
 		}
 		return this._callbackProgress = value;
 	}
 	,__class__: com_akifox_asynchttp_HttpRequest
 	,__properties__: {set_callbackProgress:"set_callbackProgress",get_callbackProgress:"get_callbackProgress",set_callbackError:"set_callbackError",get_callbackError:"get_callbackError",set_callback:"set_callback",get_callback:"get_callback",set_contentIsBinary:"set_contentIsBinary",get_contentIsBinary:"get_contentIsBinary",set_contentType:"set_contentType",get_contentType:"get_contentType",set_content:"set_content",get_content:"get_content",set_method:"set_method",get_method:"get_method",set_url:"set_url",get_url:"get_url",set_http11:"set_http11",get_http11:"get_http11",set_async:"set_async",get_async:"get_async",set_timeout:"set_timeout",get_timeout:"get_timeout",get_headers:"get_headers",get_fingerprint:"get_fingerprint",get_finalised:"get_finalised"}
-};
-var haxe_IMap = function() { };
-haxe_IMap.__name__ = "haxe.IMap";
-var haxe_ds_IntMap = function() {
-	this.h = { };
-};
-haxe_ds_IntMap.__name__ = "haxe.ds.IntMap";
-haxe_ds_IntMap.__interfaces__ = [haxe_IMap];
-haxe_ds_IntMap.prototype = {
-	__class__: haxe_ds_IntMap
 };
 var com_akifox_asynchttp_HttpResponse = function(request,time,url,headers,status,content,error) {
 	this._error = null;
@@ -1093,7 +1074,7 @@ com_akifox_asynchttp_HttpResponse.prototype = {
 			var message = "HttpResponse.toXml() -> " + Std.string(((msg) instanceof js__$Boot_HaxeError) ? msg.val : msg);
 			var fingerprint = this._request.get_fingerprint();
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + fingerprint + " ERROR:" + message,{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
 		}
 		return _contentXml;
@@ -1106,7 +1087,7 @@ com_akifox_asynchttp_HttpResponse.prototype = {
 			var message = "HttpResponse.toJson() -> " + Std.string(((msg) instanceof js__$Boot_HaxeError) ? msg.val : msg);
 			var fingerprint = this._request.get_fingerprint();
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + fingerprint + " ERROR:" + message,{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
 		}
 		return _contentJson;
@@ -1119,7 +1100,7 @@ com_akifox_asynchttp_HttpResponse.prototype = {
 			var message = "HttpResponse.toText() -> " + Std.string(((msg) instanceof js__$Boot_HaxeError) ? msg.val : msg);
 			var fingerprint = this._request.get_fingerprint();
 			if(com_akifox_asynchttp_AsyncHttp.logErrorEnabled) {
-				haxe_Log.trace("${fingerprint} ERROR:${message}",{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 98, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
+				haxe_Log.trace("" + fingerprint + " ERROR:" + message,{ fileName : "com/akifox/asynchttp/AsyncHttp.hx", lineNumber : 195, className : "com.akifox.asynchttp.AsyncHttp", methodName : "error"});
 			}
 		}
 		return _contentText;
@@ -3605,14 +3586,14 @@ components_CustomNavbar.prototype = $extend(com_vige_core_DynamicComponent.proto
 		var determineBorder = function() {
 			var path = window.location.pathname;
 			if(path == url) {
-				var this11 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this11, sides : com_vige_support_BorderSides.Bottom});
+				var this2 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this2, sides : com_vige_support_BorderSides.Bottom});
 			}
 			return null;
 		};
 		var tmp = new com_vige_utils_Size({ height : "40px", width : "70px"});
-		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this12}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
+		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this3}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
 			if(url == "https://github.com/ljellevo/mist.io") {
 				com_vige_core_Navigate.link({ url : url});
 			}
@@ -3641,14 +3622,14 @@ components_CustomNavbar.prototype = $extend(com_vige_core_DynamicComponent.proto
 		var determineBorder = function() {
 			var path = window.location.pathname;
 			if(path == url) {
-				var this11 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this11, sides : com_vige_support_BorderSides.Bottom});
+				var this2 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this2, sides : com_vige_support_BorderSides.Bottom});
 			}
 			return null;
 		};
 		var tmp = new com_vige_utils_Size({ height : "40px", width : "70px"});
-		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this12}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
+		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this3}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
 			js_Cookie.remove("credentials");
 			window.location.reload();
 		}});
@@ -3706,6 +3687,8 @@ components_DateConverter.convertTimestampToString = function(timestamp) {
 	}
 	return Std.string(date.getDate()) + " " + monthString + " " + Std.string(date.getFullYear());
 };
+var haxe_IMap = function() { };
+haxe_IMap.__name__ = "haxe.IMap";
 var haxe_Log = function() { };
 haxe_Log.__name__ = "haxe.Log";
 haxe_Log.formatOutput = function(v,infos) {
@@ -3893,6 +3876,14 @@ haxe_crypto_Sha256.prototype = {
 		return str.toLowerCase();
 	}
 	,__class__: haxe_crypto_Sha256
+};
+var haxe_ds_IntMap = function() {
+	this.h = { };
+};
+haxe_ds_IntMap.__name__ = "haxe.ds.IntMap";
+haxe_ds_IntMap.__interfaces__ = [haxe_IMap];
+haxe_ds_IntMap.prototype = {
+	__class__: haxe_ds_IntMap
 };
 var haxe_ds_StringMap = function() {
 	this.h = { };
@@ -5141,8 +5132,8 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			}})})});
 			var tmp5 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
 			var tmp6 = new com_vige_support_Fonts("Poppins","sans-serif");
-			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-			return new com_vige_components_Column({ children : [tmp2,tmp3,tmp4,new com_vige_components_Container({ padding : tmp5, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("Steg",{ textSize : 20, font : tmp6, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this11})})})}),new com_vige_components_Column({ children : this.generateSteps()}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("+"), onClick : function() {
+			var this2 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			return new com_vige_components_Column({ children : [tmp2,tmp3,tmp4,new com_vige_components_Container({ padding : tmp5, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("Steg",{ textSize : 20, font : tmp6, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this2})})})}),new com_vige_components_Column({ children : this.generateSteps()}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("+"), onClick : function() {
 				_gthis.saveValues();
 				_gthis.setState(_gthis,function(e1) {
 					_gthis.stepAmount++;
@@ -5249,25 +5240,25 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 141, className : "pages.HomePage", methodName : "component"});
 			});
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : com_vige_components_Constructors.constructRows({ data : this.data, elementsInEachRow : 1, elementBuilder : function(iterator) {
-			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-			var tmp3 = new com_vige_utils_Color({ backgroundColor : this11});
+			var this2 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+			var tmp3 = new com_vige_utils_Color({ backgroundColor : this2});
 			var tmp4 = com_vige_utils_Margin.fromTRBL(0,0,20,0);
 			var tmp5 = new com_vige_utils_Size({ width : "100%"});
-			var this12 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp6 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this12})});
-			var this13 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp7 = [tmp6,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this13})})];
+			var this3 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp6 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this3})});
+			var this4 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp7 = [tmp6,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this4})})];
 			var tmp8 = com_vige_utils_Padding.all(20);
 			var tmp9 = _gthis.data[iterator].getName();
-			var this14 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-			var tmp10 = new com_vige_components_Row({ children : [new com_vige_components_Text(tmp9,{ color : new com_vige_utils_Color({ color : this14}), textSize : 20}),new com_vige_components_Container({ child : new com_vige_components_Text(components_DateConverter.convertTimestampToString(_gthis.data[iterator].getUploaded()),{ textAlignment : com_vige_support_TextAlign.Right}), size : new com_vige_utils_Size({ width : "110px"})})], flex : true, mainAxisAlignment : com_vige_support_MainAxisAlignment.Stretch, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpaceBetween, equalElementWidth : false});
-			var this15 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-			var tmp11 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : this15}), size : new com_vige_utils_Size({ height : "2px"})});
+			var this5 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			var tmp10 = new com_vige_components_Row({ children : [new com_vige_components_Text(tmp9,{ color : new com_vige_utils_Color({ color : this5}), textSize : 20}),new com_vige_components_Container({ child : new com_vige_components_Text(components_DateConverter.convertTimestampToString(_gthis.data[iterator].getUploaded()),{ textAlignment : com_vige_support_TextAlign.Right}), size : new com_vige_utils_Size({ width : "110px"})})], flex : true, mainAxisAlignment : com_vige_support_MainAxisAlignment.Stretch, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpaceBetween, equalElementWidth : false});
+			var this6 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			var tmp11 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : this6}), size : new com_vige_utils_Size({ height : "2px"})});
 			var tmp12 = _gthis.data[iterator].getTags();
-			var this16 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			var this7 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
 			return new com_vige_components_Action({ onClick : function() {
 				com_vige_core_Navigate.to({ url : "/recipe/" + _gthis.data[iterator].getId()});
-			}, child : new com_vige_components_Container({ color : tmp3, margin : tmp4, size : tmp5, shadow : tmp7, padding : tmp8, child : new com_vige_components_Column({ children : [tmp10,tmp11,new com_vige_components_Text(tmp12,{ color : new com_vige_utils_Color({ color : this16})})]})})});
+			}, child : new com_vige_components_Container({ color : tmp3, margin : tmp4, size : tmp5, shadow : tmp7, padding : tmp8, child : new com_vige_components_Column({ children : [tmp10,tmp11,new com_vige_components_Text(tmp12,{ color : new com_vige_utils_Color({ color : this7})})]})})});
 		}, rowBuilder : function(children) {
 			return new com_vige_components_Row({ children : children});
 		}})})})})]})});
@@ -5332,15 +5323,15 @@ pages_LoginPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var tmp3 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
 		var tmp4 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this1})});
-		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-		var tmp5 = [tmp4,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this11})})];
-		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		var tmp6 = new com_vige_utils_Color({ backgroundColor : this12});
+		var this2 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+		var tmp5 = [tmp4,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this2})})];
+		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		var tmp6 = new com_vige_utils_Color({ backgroundColor : this3});
 		var tmp7 = new com_vige_utils_Size({ width : "300px"});
 		var tmp8 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
 		var tmp9 = new com_vige_support_Fonts("Poppins","sans-serif");
-		var this13 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ route : "/", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp5, color : tmp6, size : tmp7, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("LOGG INN",{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this13})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Register"), onClick : function() {
+		var this4 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+		this.page = new com_vige_components_Page({ route : "/", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp5, color : tmp6, size : tmp7, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("LOGG INN",{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this4})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Register"), onClick : function() {
 			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 153, className : "pages.LoginPage", methodName : "component"});
 			com_vige_core_Navigate.to({ url : "/register"});
 		}})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Logg inn"), onClick : function() {
@@ -5390,18 +5381,18 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			var tmp1 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
 			var this1 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
 			var tmp2 = new com_vige_components_Text("Link til oppskrift",{ color : new com_vige_utils_Color({ color : this1})});
-			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-			var tmp3 = new com_vige_utils_Color({ backgroundColor : this11});
+			var this2 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+			var tmp3 = new com_vige_utils_Color({ backgroundColor : this2});
 			var tmp4 = new com_vige_utils_Size({ width : "100%"});
-			var this12 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp5 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this12})});
-			var this13 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp6 = [tmp5,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this13})})];
+			var this3 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp5 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this3})});
+			var this4 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp6 = [tmp5,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this4})})];
 			var tmp7 = com_vige_utils_Padding.all(20);
-			var this14 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			var this5 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
 			return new com_vige_components_Container({ padding : tmp, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : tmp1, children : [tmp2,new com_vige_components_Action({ onClick : function() {
 				com_vige_core_Navigate.link({ url : _gthis.data.getUrl()});
-			}, child : new com_vige_components_Container({ color : tmp3, size : tmp4, shadow : tmp6, padding : tmp7, child : new com_vige_components_Row({ flex : true, children : [new com_vige_components_Text("godt.no",{ color : new com_vige_utils_Color({ color : this14}), textSize : 20})]})})})]})})});
+			}, child : new com_vige_components_Container({ color : tmp3, size : tmp4, shadow : tmp6, padding : tmp7, child : new com_vige_components_Row({ flex : true, children : [new com_vige_components_Text("godt.no",{ color : new com_vige_utils_Color({ color : this5}), textSize : 20})]})})})]})})});
 		}
 		return new com_vige_components_Container({ });
 	}
@@ -5418,8 +5409,8 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			return new com_vige_components_Row({ children : children});
 		}})});
 		var tmp2 = new com_vige_components_Container({ size : new com_vige_utils_Size({ height : "30px"})});
-		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-		return new com_vige_components_Container({ child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Text("Fremgangsmåte",{ color : new com_vige_utils_Color({ color : this11})}),new com_vige_components_Column({ children : com_vige_components_Constructors.constructRows({ data : this.data.getSteps(), elementsInEachRow : 1, elementBuilder : function(i1) {
+		var this2 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+		return new com_vige_components_Container({ child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Text("Fremgangsmåte",{ color : new com_vige_utils_Color({ color : this2})}),new com_vige_components_Column({ children : com_vige_components_Constructors.constructRows({ data : this.data.getSteps(), elementsInEachRow : 1, elementBuilder : function(i1) {
 			return new com_vige_components_Text(Std.string(i1 + 1) + ". " + _gthis.data.getSteps()[i1]);
 		}, rowBuilder : function(children1) {
 			return new com_vige_components_Row({ children : children1});
@@ -5432,32 +5423,32 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			var tmp1 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
 			var this1 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
 			var tmp2 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this1})});
-			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp3 = [tmp2,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this11})})];
-			var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-			var tmp4 = new com_vige_utils_Color({ backgroundColor : this12});
+			var this2 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp3 = [tmp2,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this2})})];
+			var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+			var tmp4 = new com_vige_utils_Color({ backgroundColor : this3});
 			var tmp5 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
 			var tmp6 = com_vige_utils_Padding.all(30);
 			var tmp7 = com_vige_utils_Padding.fromTRBL(0,0,0,0);
 			var tmp8 = this.data.getName() != null ? this.data.getName() : "";
 			var tmp9 = new com_vige_support_Fonts("Poppins","sans-serif");
-			var this13 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-			var tmp10 = new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text(tmp8,{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this13})})})});
+			var this4 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			var tmp10 = new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text(tmp8,{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this4})})})});
 			var tmp11 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
 			var tmp12 = this.data.getCategory();
-			var this14 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			var tmp13 = new com_vige_components_Text(tmp12,{ color : new com_vige_utils_Color({ color : this14})});
+			var this5 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			var tmp13 = new com_vige_components_Text(tmp12,{ color : new com_vige_utils_Color({ color : this5})});
 			var tmp14 = Std.string(this.data.getViewed() + " visninger");
-			var this15 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			var tmp15 = new com_vige_components_Text(tmp14,{ color : new com_vige_utils_Color({ color : this15})});
+			var this6 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			var tmp15 = new com_vige_components_Text(tmp14,{ color : new com_vige_utils_Color({ color : this6})});
 			var tmp16 = components_DateConverter.convertTimestampToString(this.data.getUploaded());
-			var this16 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			var tmp17 = new com_vige_components_Center({ margin : tmp1, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp3, color : tmp4, size : tmp5, padding : tmp6, child : new com_vige_components_Column({ children : [tmp10,new com_vige_components_Container({ padding : tmp11, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpacedEvenly, children : [tmp13,tmp15,new com_vige_components_Text(tmp16,{ color : new com_vige_utils_Color({ color : this16})})]})})}),this.isLink(),this.generateSteps()]})})});
+			var this7 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			var tmp17 = new com_vige_components_Center({ margin : tmp1, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp3, color : tmp4, size : tmp5, padding : tmp6, child : new com_vige_components_Column({ children : [tmp10,new com_vige_components_Container({ padding : tmp11, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpacedEvenly, children : [tmp13,tmp15,new com_vige_components_Text(tmp16,{ color : new com_vige_utils_Color({ color : this7})})]})})}),this.isLink(),this.generateSteps()]})})});
 			var tmp18 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
 			var tmp19 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
 			var tmp20 = this.data.getTags();
-			var this17 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp17,new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Container({ size : tmp18, margin : tmp19, child : new com_vige_components_Text(tmp20,{ color : new com_vige_utils_Color({ color : this17}), textAlignment : com_vige_support_TextAlign.Center})})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Button({ margin : com_vige_utils_Margin.fromTRBL(30,0,0,0), child : new com_vige_components_Text("Slett oppskrift"), color : new com_vige_utils_Color({ backgroundColor : -65536, color : -1}), onClick : function() {
+			var this8 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp17,new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Container({ size : tmp18, margin : tmp19, child : new com_vige_components_Text(tmp20,{ color : new com_vige_utils_Color({ color : this8}), textAlignment : com_vige_support_TextAlign.Center})})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Button({ margin : com_vige_utils_Margin.fromTRBL(30,0,0,0), child : new com_vige_components_Text("Slett oppskrift"), color : new com_vige_utils_Color({ backgroundColor : -65536, color : -1}), onClick : function() {
 				if(window.confirm("Sikker på at du vil slette oppskriften?")) {
 					_gthis.deleteRecipe();
 				}
@@ -5533,13 +5524,13 @@ pages_RegisterPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,
 		var tmp3 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#808080",1,null));
 		var tmp4 = [new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "8px", color : new com_vige_utils_Color({ backgroundColor : this1})})];
-		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		var tmp5 = new com_vige_utils_Color({ backgroundColor : this11});
+		var this2 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		var tmp5 = new com_vige_utils_Color({ backgroundColor : this2});
 		var tmp6 = new com_vige_utils_Size({ width : "300px"});
 		var tmp7 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
 		var tmp8 = new com_vige_support_Fonts("Poppins","sans-serif");
-		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ route : "/register", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp4, color : tmp5, size : tmp6, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY BRUKER",{ textSize : 40, font : tmp8, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this12})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.retypePasswordInputController, placeholder : "Gjenta Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Allerede bruker?"), onClick : function() {
+		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+		this.page = new com_vige_components_Page({ route : "/register", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp4, color : tmp5, size : tmp6, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY BRUKER",{ textSize : 40, font : tmp8, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this3})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.retypePasswordInputController, placeholder : "Gjenta Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Allerede bruker?"), onClick : function() {
 			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/RegisterPage.hx", lineNumber : 180, className : "pages.RegisterPage", methodName : "component"});
 			com_vige_core_Navigate.to({ url : "/login"});
 		}})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Registrer"), onClick : function() {
