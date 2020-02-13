@@ -164,6 +164,7 @@ new Row({
       children: [
         homepageButton("Oversikt", null, "/"),
         homepageButton("Ny", null, "/add"),
+        homepageButton("Tilbakemelding", null, "/feedback"),
         logoutButton("Logg ut", null, "/logout")
       ],
     }),
