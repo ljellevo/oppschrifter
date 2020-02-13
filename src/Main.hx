@@ -1,3 +1,5 @@
+import com.vige.utils.Colors;
+import com.vige.utils.Color;
 import haxe.Http;
 import js.Cookie;
 import pages.*;
@@ -45,6 +47,7 @@ class Main {
       Browser.window.addEventListener('popstate', function(e) {
         Navigate.navigationEvent();
       });
+      body.globalBackgroundColor(new Color({backgroundColor: Colors.fromString("#fafafa")}));
       body.init();
     });
     

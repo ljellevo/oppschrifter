@@ -64,7 +64,7 @@ class AddPage extends DynamicComponent {
     }
 
     testFunc(newRecipe.toJSON(), function(response){
-      trace("Got the response via callback", response);
+      Navigate.to({url: "/", hardRefresh: true});
     });
   }
 
@@ -278,18 +278,6 @@ class AddPage extends DynamicComponent {
       route: "/add",
       child: new Column({
         children: [
-          new Container({
-            color: new Color({backgroundColor: Colors.CYAN}),
-            size: new Size({width: "100%", height: "20px"})
-          }),
-          new Container({
-            color: new Color({backgroundColor: Colors.RED}),
-            size: new Size({width: "100%", height: "20px"})
-          }),
-          new Container({
-            color: new Color({backgroundColor: Colors.BLUE}),
-            size: new Size({width: "100%", height: "20px"})
-          }),
           new Container({
             padding: Padding.fromTRBL(30, 0, 30, 0),
             child: new Center({

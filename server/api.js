@@ -253,15 +253,14 @@ module.exports = function(app) {
           dbTags: req.body.dbTags,
           uploaded: req.body.uploaded,
           viewed: req.body.viewed,
-          owner: result._id
+          owner: token._id
         }
         var database = new Database();
         database.query(function(client) {
           const collection = client.db("oppschrifter").collection("recipes");
           collection.insertOne(object, function(err, result) {
             if(err) console.log(err);
-            console.log("Uploaded")
-            res.send("Done");
+            res.send("Inserted");
           });
         });
       } else {
@@ -270,4 +269,30 @@ module.exports = function(app) {
       }
     });
   });
+
+  /**
+   * Deletes specific recipe
+   */
+
+  app.get('/api/recipe/:id/delete', function(req, res){
+    authenticateRequest(req, function(token) {
+      if(token != null) {
+        console.log("Is request authnticated?: " + token);
+        var database = new Database();
+        database.query(function(client) {
+          const collection = client.db("oppschrifter").collection("recipes");
+          collection.deleteOne({_id: new ObjcetId(req.params.id), owner: token._id}, function(err, fetchedRecipe) {
+            if(err) console.log(err);
+            res.statusCode = 200;
+            res.send("Deleted");
+          })
+        });
+      } else {
+        res.statusMessage = "Not authenticated";
+        res.status(403).end();
+      }
+    });
+  });
 }
+
+

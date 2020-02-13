@@ -1,5 +1,10 @@
 package pages;
 
+import js.html.Request;
+import haxe.http.HttpMethod;
+import haxe.io.BytesOutput;
+import haxe.Http;
+import js.Browser;
 import com.vige.support.Enums.TextAlign;
 import com.vige.support.Enums.MainAxisAlignment;
 import classes.Recipe;
@@ -51,6 +56,20 @@ class RecipePage extends DynamicComponent {
           );
           data = recipe;
         });
+      },
+      onProgress: function() {
+      },
+      onError: function(error) {
+      }
+    }).request();
+  }
+
+  function deleteRecipe(){
+    new SingleRequest({
+      url: "http://localhost:3000/api/recipe/" + Navigate.getParameters()[0] + "/delete",
+      method: "GET",
+      onComplete: function(res: HttpResponse) {
+        Navigate.to({url: "/", hardRefresh: true});
       },
       onProgress: function() {
       },
@@ -159,23 +178,12 @@ class RecipePage extends DynamicComponent {
   override public function component(): Page {
     if(data != null){
       page = new Page({
+        
         navbar: new CustomNavbar().navbarComponent(),
         route: "/recipe/:id",
+
         child: new Column({          
-          children: [
-            new Container({
-              color: new Color({backgroundColor: Colors.CYAN}),
-              size: new Size({width: "100%", height: "20px"})
-            }),
-            new Container({
-              color: new Color({backgroundColor: Colors.RED}),
-              size: new Size({width: "100%", height: "20px"})
-            }),
-            new Container({
-              color: new Color({backgroundColor: Colors.BLUE}),
-              size: new Size({width: "100%", height: "20px"})
-            }),
-            
+          children: [      
             new Center({
               margin: Margin.fromTRBL(30, 0, 0, 0),
               alignment: CenterAlignment.Both,
@@ -229,7 +237,6 @@ class RecipePage extends DynamicComponent {
                     }),
                     isLink(),
                     generateSteps(),
-                    
                   ]
                 })
               })
@@ -249,6 +256,21 @@ class RecipePage extends DynamicComponent {
                   textAlignment: TextAlign.Center
                 })
               })
+            }),
+            new Center({
+              
+              alignment: CenterAlignment.Horizontal,
+              child: new Button({
+                margin: Margin.fromTRBL(30, 0, 0, 0),
+                child: new Text("Slett oppskrift"),
+                color: new Color({backgroundColor: Colors.RED, color: Colors.WHITE}),
+                onClick: function() {
+                  if(Browser.window.confirm("Sikker på at du vil slette oppskriften?")){
+                    //True
+                    deleteRecipe();
+                  }
+                }
+              })
             })
           ]
         })
@@ -260,18 +282,6 @@ class RecipePage extends DynamicComponent {
         route: "/recipe/:id",
         child: new Column({
           children: [
-            new Container({
-              color: new Color({backgroundColor: Colors.CYAN}),
-              size: new Size({width: "100%", height: "20px"})
-            }),
-            new Container({
-              color: new Color({backgroundColor: Colors.RED}),
-              size: new Size({width: "100%", height: "20px"})
-            }),
-            new Container({
-              color: new Color({backgroundColor: Colors.BLUE}),
-              size: new Size({width: "100%", height: "20px"})
-            }),
           ]
         })
       });

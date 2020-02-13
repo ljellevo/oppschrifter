@@ -95,7 +95,7 @@ Main.main = function() {
 			req.request(true);
 		};
 		request(function(response1) {
-			haxe_Log.trace("Got the response via callback",{ fileName : "src/Main.hx", lineNumber : 27, className : "Main", methodName : "main", customParams : [response1]});
+			haxe_Log.trace("Got the response via callback",{ fileName : "src/Main.hx", lineNumber : 29, className : "Main", methodName : "main", customParams : [response1]});
 			if(response1 == "true") {
 				callback(response1);
 			}
@@ -107,6 +107,8 @@ Main.main = function() {
 		window.addEventListener("popstate",function(e) {
 			com_vige_core_Navigate.navigationEvent();
 		});
+		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		body.globalBackgroundColor(new com_vige_utils_Color({ backgroundColor : this1}));
 		body.init();
 	});
 	com_vige_core_Navigate.routes = [new pages_LoginPage(),new pages_RegisterPage()];
@@ -2438,6 +2440,9 @@ com_vige_core_Body.prototype = {
 		style.fontFamily = fontFamily;
 		style.fontWeight = fontWeight;
 	}
+	,globalBackgroundColor: function(color) {
+		window.document.body.style.backgroundColor = color.getBackgroundColor();
+	}
 	,setHeader: function(stylesheetUrl) {
 		var element = "<link href=\"" + stylesheetUrl + "\", rel=\"stylesheet\">";
 		var style = window.document.head;
@@ -3795,14 +3800,14 @@ components_CustomNavbar.prototype = $extend(com_vige_core_DynamicComponent.proto
 		var determineBorder = function() {
 			var path = window.location.pathname;
 			if(path == url) {
-				var this2 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this2, sides : com_vige_support_BorderSides.Bottom});
+				var this11 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this11, sides : com_vige_support_BorderSides.Bottom});
 			}
 			return null;
 		};
 		var tmp = new com_vige_utils_Size({ height : "40px", width : "70px"});
-		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this3}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
+		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this12}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
 			if(url == "https://github.com/ljellevo/mist.io") {
 				com_vige_core_Navigate.link({ url : url});
 			}
@@ -3831,21 +3836,21 @@ components_CustomNavbar.prototype = $extend(com_vige_core_DynamicComponent.proto
 		var determineBorder = function() {
 			var path = window.location.pathname;
 			if(path == url) {
-				var this2 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this2, sides : com_vige_support_BorderSides.Bottom});
+				var this11 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+				return new com_vige_utils_Border({ style : com_vige_support_BorderStyle.Solid, width : 5, color : this11, sides : com_vige_support_BorderSides.Bottom});
 			}
 			return null;
 		};
 		var tmp = new com_vige_utils_Size({ height : "40px", width : "70px"});
-		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this3}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
+		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this12}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
 			js_Cookie.remove("credentials");
 			window.location.reload();
 		}});
 	}
 	,navbarComponent: function() {
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		var navbar = new com_vige_components_Navbar({ position : com_vige_support_NavbarPosition.Top, offset : 0, color : new com_vige_utils_Color({ backgroundColor : this1}), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpacedEvenly, margin : com_vige_utils_Margin.fromTRBL(10,0,10,0), children : [this.homepageButton("Oversikt",null,"/"),this.homepageButton("Ny",null,"/add"),this.logoutButton("Logg ut",null,"/logout")]}), onComplete : function() {
+		var navbar = new com_vige_components_Navbar({ position : com_vige_support_NavbarPosition.Top, offset : 0, color : new com_vige_utils_Color({ backgroundColor : this1}), child : new com_vige_components_Column({ children : [new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpacedEvenly, margin : com_vige_utils_Margin.fromTRBL(10,0,10,0), children : [this.homepageButton("Oversikt",null,"/"),this.homepageButton("Ny",null,"/add"),this.logoutButton("Logg ut",null,"/logout")]})]}), onComplete : function() {
 		}});
 		return navbar;
 	}
@@ -5327,7 +5332,7 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			req.request(true);
 		};
 		testFunc(this.newRecipe.toJSON(),function(response1) {
-			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/AddPage.hx", lineNumber : 67, className : "pages.AddPage", methodName : "addRecipe", customParams : [response1]});
+			com_vige_core_Navigate.to({ url : "/", hardRefresh : true});
 		});
 	}
 	,generateIngredients: function() {
@@ -5424,13 +5429,10 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 	,component: function() {
 		var _gthis = this;
 		var tmp = new components_CustomNavbar().navbarComponent();
-		var tmp1 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-		var tmp2 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-		var tmp3 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-		var tmp4 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
-		var tmp5 = new com_vige_support_Fonts("Poppins","sans-serif");
+		var tmp1 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
+		var tmp2 = new com_vige_support_Fonts("Poppins","sans-serif");
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ navbar : tmp, route : "/add", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.nameInputController, placeholder : "Navn på oppskrift", value : this.nameValue, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.categoryInputController, placeholder : "Kategori", value : this.categoryValue, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Row({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : [new com_vige_components_Text("Vil du legge til en link?",{ size : new com_vige_utils_Size({ width : "10px"})}),new com_vige_components_Input({ type : com_vige_support_InputType.Checkbox, margin : com_vige_utils_Margin.fromTRBL(0,0,0,10), controller : this.linkInputController, placeholder : "Stikkord", size : new com_vige_utils_Size({ width : "10px"}), checked : this.linkValue, onClick : function() {
+		this.page = new com_vige_components_Page({ navbar : tmp, route : "/add", child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp1, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY",{ textSize : 40, font : tmp2, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.nameInputController, placeholder : "Navn på oppskrift", value : this.nameValue, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.categoryInputController, placeholder : "Kategori", value : this.categoryValue, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Row({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : [new com_vige_components_Text("Vil du legge til en link?",{ size : new com_vige_utils_Size({ width : "10px"})}),new com_vige_components_Input({ type : com_vige_support_InputType.Checkbox, margin : com_vige_utils_Margin.fromTRBL(0,0,0,10), controller : this.linkInputController, placeholder : "Stikkord", size : new com_vige_utils_Size({ width : "10px"}), checked : this.linkValue, onClick : function() {
 			_gthis.linkValue = _gthis.linkInputController.getElement().checked;
 			_gthis.setState(_gthis,function() {
 				if(_gthis.isLink) {
@@ -5492,39 +5494,36 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			}
 		});
 		var tmp = new components_CustomNavbar().navbarComponent();
-		var tmp1 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-		var tmp2 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-		var tmp3 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-		var tmp4 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
-		var tmp5 = new com_vige_support_Fonts("Poppins","sans-serif");
+		var tmp1 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
+		var tmp2 = new com_vige_support_Fonts("Poppins","sans-serif");
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ navbar : tmp, route : "/", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("OPPSCHRIFTER",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.searchInputController, placeholder : "Søk etter oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), value : this.currentValue, onChange : function() {
+		this.page = new com_vige_components_Page({ navbar : tmp, route : "/", child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp1, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("OPPSCHRIFTER",{ textSize : 40, font : tmp2, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.searchInputController, placeholder : "Søk etter oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), value : this.currentValue, onChange : function() {
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Search"), onClick : function() {
-			haxe_Log.trace("Search was clicked",{ fileName : "src/pages/HomePage.hx", lineNumber : 150, className : "pages.HomePage", methodName : "component"});
+			haxe_Log.trace("Search was clicked",{ fileName : "src/pages/HomePage.hx", lineNumber : 138, className : "pages.HomePage", methodName : "component"});
 			_gthis.currentValue = _gthis.searchInputController.getValue();
 			_gthis.getRecipe(function(token1) {
-				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 153, className : "pages.HomePage", methodName : "component"});
+				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 141, className : "pages.HomePage", methodName : "component"});
 			});
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : com_vige_components_Constructors.constructRows({ data : this.data, elementsInEachRow : 1, elementBuilder : function(iterator) {
 			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-			var tmp6 = new com_vige_utils_Color({ backgroundColor : this11});
-			var tmp7 = com_vige_utils_Margin.fromTRBL(0,0,20,0);
-			var tmp8 = new com_vige_utils_Size({ width : "100%"});
+			var tmp3 = new com_vige_utils_Color({ backgroundColor : this11});
+			var tmp4 = com_vige_utils_Margin.fromTRBL(0,0,20,0);
+			var tmp5 = new com_vige_utils_Size({ width : "100%"});
 			var this12 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp9 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this12})});
+			var tmp6 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this12})});
 			var this13 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp10 = [tmp9,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this13})})];
-			var tmp11 = com_vige_utils_Padding.all(20);
-			var tmp12 = _gthis.data[iterator].getName();
+			var tmp7 = [tmp6,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this13})})];
+			var tmp8 = com_vige_utils_Padding.all(20);
+			var tmp9 = _gthis.data[iterator].getName();
 			var this14 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-			var tmp13 = new com_vige_components_Row({ children : [new com_vige_components_Text(tmp12,{ color : new com_vige_utils_Color({ color : this14}), textSize : 20}),new com_vige_components_Container({ child : new com_vige_components_Text(components_DateConverter.convertTimestampToString(_gthis.data[iterator].getUploaded()),{ textAlignment : com_vige_support_TextAlign.Right}), size : new com_vige_utils_Size({ width : "110px"})})], flex : true, mainAxisAlignment : com_vige_support_MainAxisAlignment.Stretch, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpaceBetween, equalElementWidth : false});
+			var tmp10 = new com_vige_components_Row({ children : [new com_vige_components_Text(tmp9,{ color : new com_vige_utils_Color({ color : this14}), textSize : 20}),new com_vige_components_Container({ child : new com_vige_components_Text(components_DateConverter.convertTimestampToString(_gthis.data[iterator].getUploaded()),{ textAlignment : com_vige_support_TextAlign.Right}), size : new com_vige_utils_Size({ width : "110px"})})], flex : true, mainAxisAlignment : com_vige_support_MainAxisAlignment.Stretch, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpaceBetween, equalElementWidth : false});
 			var this15 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-			var tmp14 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : this15}), size : new com_vige_utils_Size({ height : "2px"})});
-			var tmp15 = _gthis.data[iterator].getTags();
+			var tmp11 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : this15}), size : new com_vige_utils_Size({ height : "2px"})});
+			var tmp12 = _gthis.data[iterator].getTags();
 			var this16 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
 			return new com_vige_components_Action({ onClick : function() {
 				com_vige_core_Navigate.to({ url : "/recipe/" + _gthis.data[iterator].getId()});
-			}, child : new com_vige_components_Container({ color : tmp6, margin : tmp7, size : tmp8, shadow : tmp10, padding : tmp11, child : new com_vige_components_Column({ children : [tmp13,tmp14,new com_vige_components_Text(tmp15,{ color : new com_vige_utils_Color({ color : this16})})]})})});
+			}, child : new com_vige_components_Container({ color : tmp3, margin : tmp4, size : tmp5, shadow : tmp7, padding : tmp8, child : new com_vige_components_Column({ children : [tmp10,tmp11,new com_vige_components_Text(tmp12,{ color : new com_vige_utils_Color({ color : this16})})]})})});
 		}, rowBuilder : function(children) {
 			return new com_vige_components_Row({ children : children});
 		}})})})})]})});
@@ -5633,6 +5632,13 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		}, onError : function(error) {
 		}}).request();
 	}
+	,deleteRecipe: function() {
+		new com_vige_core_SingleRequest({ url : "http://localhost:3000/api/recipe/" + com_vige_core_Navigate.getParameters()[0] + "/delete", method : "GET", onComplete : function(res) {
+			com_vige_core_Navigate.to({ url : "/", hardRefresh : true});
+		}, onProgress : function() {
+		}, onError : function(error) {
+		}}).request();
+	}
 	,isLink: function() {
 		var _gthis = this;
 		if(this.data.getHasLink()) {
@@ -5676,43 +5682,45 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		}})})]})});
 	}
 	,component: function() {
+		var _gthis = this;
 		if(this.data != null) {
 			var tmp = new components_CustomNavbar().navbarComponent();
-			var tmp1 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-			var tmp2 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-			var tmp3 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-			var tmp4 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
+			var tmp1 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
 			var this1 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp5 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this1})});
+			var tmp2 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this1})});
 			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp6 = [tmp5,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this11})})];
+			var tmp3 = [tmp2,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this11})})];
 			var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-			var tmp7 = new com_vige_utils_Color({ backgroundColor : this12});
-			var tmp8 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
-			var tmp9 = com_vige_utils_Padding.all(30);
-			var tmp10 = com_vige_utils_Padding.fromTRBL(0,0,0,0);
-			var tmp11 = this.data.getName() != null ? this.data.getName() : "";
-			var tmp12 = new com_vige_support_Fonts("Poppins","sans-serif");
+			var tmp4 = new com_vige_utils_Color({ backgroundColor : this12});
+			var tmp5 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
+			var tmp6 = com_vige_utils_Padding.all(30);
+			var tmp7 = com_vige_utils_Padding.fromTRBL(0,0,0,0);
+			var tmp8 = this.data.getName() != null ? this.data.getName() : "";
+			var tmp9 = new com_vige_support_Fonts("Poppins","sans-serif");
 			var this13 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-			var tmp13 = new com_vige_components_Container({ padding : tmp10, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text(tmp11,{ textSize : 40, font : tmp12, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this13})})})});
-			var tmp14 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
-			var tmp15 = this.data.getCategory();
+			var tmp10 = new com_vige_components_Container({ padding : tmp7, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text(tmp8,{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this13})})})});
+			var tmp11 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
+			var tmp12 = this.data.getCategory();
 			var this14 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			var tmp16 = new com_vige_components_Text(tmp15,{ color : new com_vige_utils_Color({ color : this14})});
-			var tmp17 = Std.string(this.data.getViewed() + " visninger");
+			var tmp13 = new com_vige_components_Text(tmp12,{ color : new com_vige_utils_Color({ color : this14})});
+			var tmp14 = Std.string(this.data.getViewed() + " visninger");
 			var this15 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			var tmp18 = new com_vige_components_Text(tmp17,{ color : new com_vige_utils_Color({ color : this15})});
-			var tmp19 = components_DateConverter.convertTimestampToString(this.data.getUploaded());
+			var tmp15 = new com_vige_components_Text(tmp14,{ color : new com_vige_utils_Color({ color : this15})});
+			var tmp16 = components_DateConverter.convertTimestampToString(this.data.getUploaded());
 			var this16 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			var tmp20 = new com_vige_components_Center({ margin : tmp4, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp6, color : tmp7, size : tmp8, padding : tmp9, child : new com_vige_components_Column({ children : [tmp13,new com_vige_components_Container({ padding : tmp14, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpacedEvenly, children : [tmp16,tmp18,new com_vige_components_Text(tmp19,{ color : new com_vige_utils_Color({ color : this16})})]})})}),this.isLink(),this.generateSteps()]})})});
-			var tmp21 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
-			var tmp22 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
-			var tmp23 = this.data.getTags();
+			var tmp17 = new com_vige_components_Center({ margin : tmp1, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp3, color : tmp4, size : tmp5, padding : tmp6, child : new com_vige_components_Column({ children : [tmp10,new com_vige_components_Container({ padding : tmp11, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpacedEvenly, children : [tmp13,tmp15,new com_vige_components_Text(tmp16,{ color : new com_vige_utils_Color({ color : this16})})]})})}),this.isLink(),this.generateSteps()]})})});
+			var tmp18 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
+			var tmp19 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
+			var tmp20 = this.data.getTags();
 			var this17 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,tmp20,new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Container({ size : tmp21, margin : tmp22, child : new com_vige_components_Text(tmp23,{ color : new com_vige_utils_Color({ color : this17}), textAlignment : com_vige_support_TextAlign.Center})})})]})});
+			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp17,new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Container({ size : tmp18, margin : tmp19, child : new com_vige_components_Text(tmp20,{ color : new com_vige_utils_Color({ color : this17}), textAlignment : com_vige_support_TextAlign.Center})})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Button({ margin : com_vige_utils_Margin.fromTRBL(30,0,0,0), child : new com_vige_components_Text("Slett oppskrift"), color : new com_vige_utils_Color({ backgroundColor : -65536, color : -1}), onClick : function() {
+				if(window.confirm("Sikker på at du vil slette oppskriften?")) {
+					_gthis.deleteRecipe();
+				}
+			}})})]})});
 			return this.page;
 		} else {
-			this.page = new com_vige_components_Page({ navbar : new components_CustomNavbar().navbarComponent(), route : "/recipe/:id", child : new com_vige_components_Column({ children : [new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})})]})});
+			this.page = new com_vige_components_Page({ navbar : new components_CustomNavbar().navbarComponent(), route : "/recipe/:id", child : new com_vige_components_Column({ children : []})});
 			return this.page;
 		}
 	}

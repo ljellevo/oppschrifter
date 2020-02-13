@@ -106,14 +106,24 @@ class CustomNavbar extends DynamicComponent {
   }
 
   
-  
+  /*
+  new Container({
+              color: new Color({backgroundColor: Colors.CYAN}),
+              size: new Size({width: "100%", height: "20px"})
+            }),
+            new Container({
+              color: new Color({backgroundColor: Colors.RED}),
+              size: new Size({width: "100%", height: "20px"})
+            }),
+            new Container({
+              color: new Color({backgroundColor: Colors.BLUE}),
+              size: new Size({width: "100%", height: "20px"})
+            }),
+            */
 
-  public function navbarComponent(): Navbar {
-    var navbar = new Navbar({
-      position: NavbarPosition.Top,
-      offset: 0,
-      color: new Color({backgroundColor: "#fafafa"}),
-      child: new Row({
+            /*
+
+new Row({
         mainAxisAlignment: MainAxisAlignment.Center,
         crossAxisAlignment: CrossAxisAlignment.SpacedEvenly,
         margin: Margin.fromTRBL(10, 0, 10, 0),
@@ -122,6 +132,42 @@ class CustomNavbar extends DynamicComponent {
           homepageButton("Ny", null, "/add"),
           logoutButton("Logg ut", null, "/logout")
         ],
+      }),
+            */
+
+  public function navbarComponent(): Navbar {
+    var navbar = new Navbar({
+      position: NavbarPosition.Top,
+      offset: 0,
+      color: new Color({backgroundColor: "#fafafa"}),
+      child: new Column({
+        children: [
+          new Container({
+            color: new Color({backgroundColor: Colors.CYAN}),
+            size: new Size({width: "100%", height: "20px"})
+          }),
+          new Container({
+            color: new Color({backgroundColor: Colors.RED}),
+            size: new Size({width: "100%", height: "20px"})
+          }),
+          new Container({
+            color: new Color({backgroundColor: Colors.BLUE}),
+            size: new Size({width: "100%", height: "20px"})
+          }),
+
+
+
+new Row({
+      mainAxisAlignment: MainAxisAlignment.Center,
+      crossAxisAlignment: CrossAxisAlignment.SpacedEvenly,
+      margin: Margin.fromTRBL(10, 0, 10, 0),
+      children: [
+        homepageButton("Oversikt", null, "/"),
+        homepageButton("Ny", null, "/add"),
+        logoutButton("Logg ut", null, "/logout")
+      ],
+    }),
+        ]
       }),
       onComplete: function (){}
     });
