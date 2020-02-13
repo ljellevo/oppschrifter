@@ -4,6 +4,9 @@
     "start": "nodemon ./server/server.js & live-server ./bin/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "engines": {
+    "node": "8.11.4"
+  },
   "main": "server/server.js",
   "license": "MIT",
   "dependencies": {
