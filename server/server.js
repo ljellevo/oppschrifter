@@ -24,6 +24,6 @@ app.get('/*', function (req, res) {
 });
 
 app.listen(process.env.PORT || 3000, function(){
-  console.log("Listening on port 3000!")
+  console.log("Listening on port: " + process.env.PORT || 3000)
 });
 
