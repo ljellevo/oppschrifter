@@ -209,8 +209,21 @@ class RecipePage extends DynamicComponent {
                       padding: Padding.fromTRBL(0, 0, 30, 0),
                       child: new Center({
                         alignment: CenterAlignment.Horizontal,
-                        child: new Text(data.getCategory(), {
-                          color: new Color({color: Colors.fromString("#A4A4A4")})
+                        child: new Row({
+                          mainAxisAlignment: MainAxisAlignment.Center,
+                          crossAxisAlignment: CrossAxisAlignment.SpacedEvenly,
+                          children: [
+                            new Text(data.getCategory(), {
+                              color: new Color({color: Colors.fromString("#A4A4A4")})
+                            }),
+                            new Text(Std.string(data.getViewed() + " visninger"), {
+                              color: new Color({color: Colors.fromString("#A4A4A4")})
+                            }),
+                            new Text(DateConverter.convertTimestampToString(data.getUploaded()), {
+                              color: new Color({color: Colors.fromString("#A4A4A4")})
+                            })
+
+                          ]
                         })
                       })
                     }),

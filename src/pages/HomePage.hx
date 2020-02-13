@@ -25,7 +25,11 @@ class HomePage extends DynamicComponent {
 
   var searchInputController = new InputController();
   var currentValue: String;
-  public function new() {}
+  public function new() {
+    getRecipe(function(token) {
+      trace("Login was successfull and token was recived");
+    });
+  }
 
   
   function getRecipe(callback:String->Void){

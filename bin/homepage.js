@@ -5453,6 +5453,9 @@ var pages_HomePage = function() {
 	this.searchInputController = new com_vige_components_InputController();
 	this.data = [];
 	com_vige_core_DynamicComponent.call(this);
+	this.getRecipe(function(token) {
+		haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 30, className : "pages.HomePage", methodName : "new"});
+	});
 };
 pages_HomePage.__name__ = "pages.HomePage";
 pages_HomePage.__super__ = com_vige_core_DynamicComponent;
@@ -5461,7 +5464,7 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var _gthis = this;
 		new com_vige_core_SingleRequest({ url : "http://localhost:3000/api/recipes/" + this.searchInputController.getValue(), method : "GET", onComplete : function(res) {
 			_gthis.setState(_gthis,function() {
-				haxe_Log.trace(res.get_content(),{ fileName : "src/pages/HomePage.hx", lineNumber : 38, className : "pages.HomePage", methodName : "getRecipe"});
+				haxe_Log.trace(res.get_content(),{ fileName : "src/pages/HomePage.hx", lineNumber : 42, className : "pages.HomePage", methodName : "getRecipe"});
 				var value = JSON.parse(res.get_content());
 				var recipes = [];
 				var _g = 0;
@@ -5484,7 +5487,7 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			if(e.keyCode == 13) {
 				_gthis.currentValue = _gthis.searchInputController.getValue();
 				_gthis.getRecipe(function(token) {
-					haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 76, className : "pages.HomePage", methodName : "component"});
+					haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 80, className : "pages.HomePage", methodName : "component"});
 				});
 			}
 		});
@@ -5497,10 +5500,10 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
 		this.page = new com_vige_components_Page({ navbar : tmp, route : "/", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("OPPSCHRIFTER",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.searchInputController, placeholder : "Søk etter oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), value : this.currentValue, onChange : function() {
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Search"), onClick : function() {
-			haxe_Log.trace("Search was clicked",{ fileName : "src/pages/HomePage.hx", lineNumber : 146, className : "pages.HomePage", methodName : "component"});
+			haxe_Log.trace("Search was clicked",{ fileName : "src/pages/HomePage.hx", lineNumber : 150, className : "pages.HomePage", methodName : "component"});
 			_gthis.currentValue = _gthis.searchInputController.getValue();
 			_gthis.getRecipe(function(token1) {
-				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 149, className : "pages.HomePage", methodName : "component"});
+				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 153, className : "pages.HomePage", methodName : "component"});
 			});
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : com_vige_components_Constructors.constructRows({ data : this.data, elementsInEachRow : 1, elementBuilder : function(iterator) {
 			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
@@ -5627,7 +5630,6 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 				_gthis.data = recipe;
 			});
 		}, onProgress : function() {
-			_gthis.data = null;
 		}, onError : function(error) {
 		}}).request();
 	}
@@ -5696,12 +5698,18 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			var tmp14 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
 			var tmp15 = this.data.getCategory();
 			var this14 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			var tmp16 = new com_vige_components_Center({ margin : tmp4, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp6, color : tmp7, size : tmp8, padding : tmp9, child : new com_vige_components_Column({ children : [tmp13,new com_vige_components_Container({ padding : tmp14, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Text(tmp15,{ color : new com_vige_utils_Color({ color : this14})})})}),this.isLink(),this.generateSteps()]})})});
-			var tmp17 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
-			var tmp18 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
-			var tmp19 = this.data.getTags();
+			var tmp16 = new com_vige_components_Text(tmp15,{ color : new com_vige_utils_Color({ color : this14})});
+			var tmp17 = Std.string(this.data.getViewed() + " visninger");
 			var this15 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,tmp16,new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Container({ size : tmp17, margin : tmp18, child : new com_vige_components_Text(tmp19,{ color : new com_vige_utils_Color({ color : this15}), textAlignment : com_vige_support_TextAlign.Center})})})]})});
+			var tmp18 = new com_vige_components_Text(tmp17,{ color : new com_vige_utils_Color({ color : this15})});
+			var tmp19 = components_DateConverter.convertTimestampToString(this.data.getUploaded());
+			var this16 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			var tmp20 = new com_vige_components_Center({ margin : tmp4, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp6, color : tmp7, size : tmp8, padding : tmp9, child : new com_vige_components_Column({ children : [tmp13,new com_vige_components_Container({ padding : tmp14, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpacedEvenly, children : [tmp16,tmp18,new com_vige_components_Text(tmp19,{ color : new com_vige_utils_Color({ color : this16})})]})})}),this.isLink(),this.generateSteps()]})})});
+			var tmp21 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
+			var tmp22 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
+			var tmp23 = this.data.getTags();
+			var this17 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,tmp20,new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Container({ size : tmp21, margin : tmp22, child : new com_vige_components_Text(tmp23,{ color : new com_vige_utils_Color({ color : this17}), textAlignment : com_vige_support_TextAlign.Center})})})]})});
 			return this.page;
 		} else {
 			this.page = new com_vige_components_Page({ navbar : new components_CustomNavbar().navbarComponent(), route : "/recipe/:id", child : new com_vige_components_Column({ children : [new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})})]})});

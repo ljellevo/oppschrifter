@@ -146,14 +146,14 @@ module.exports = function(app) {
   */
   app.get('/api/recipes/:query', function(req, res){
     var query = req.params.query;
-    authenticateRequest(req, function(result) {
-      if(result != null) {
+    authenticateRequest(req, function(token) {
+      if(token != null) {
         console.log("Is request authnticated?: " + result);
         console.log("Getting recipe")
         var database = new Database();
         database.query(function(client) {
           const collection = client.db("oppschrifter").collection("recipes");
-          collection.find({dbTags: {$regex : new RegExp(".*" + query + ".*", "i")}}).sort(mostViewed).toArray(function(err, result) {
+          collection.find({dbTags: {$regex : new RegExp(".*" + query + ".*", "i")}, owner: token._id}).sort(mostViewed).toArray(function(err, result) {
             if(err) console.log(err);
             console.log(result)
             res.send(result);
@@ -171,13 +171,13 @@ module.exports = function(app) {
    * @returns JSON object with result
    */
   app.get('/api/recipes/', function(req, res){
-    authenticateRequest(req, function(result) {
-      if(result != null) {
-        console.log("Is request authnticated?: " + result);
+    authenticateRequest(req, function(token) {
+      if(token != null) {
+        console.log("Is request authnticated?: " + token);
         var database = new Database();
         database.query(function(client) {
           const collection = client.db("oppschrifter").collection("recipes");
-          collection.find({}).sort(newestFirst).toArray(function(err, result) {
+          collection.find({owner: token._id}).sort(newestFirst).toArray(function(err, result) {
             if(err) console.log(err);
             console.log(result)
             res.send(result);
@@ -196,16 +196,31 @@ module.exports = function(app) {
    * @returns JSON object with result
    */
   app.get('/api/recipe/:id', function(req, res){
-    authenticateRequest(req, function(result) {
-      if(result != null) {
-        console.log("Is request authnticated?: " + result);
+    function updateViews(record, token, callback) {
+      var newView = record.viewed + 1
+      var database = new Database();
+      database.query(function(client) {
+        const collection = client.db("oppschrifter").collection("recipes");
+        collection.updateOne({_id: record._id, owner: token._id},{$set: {viewed: newView}}, function(err, result) {
+          if(err) console.log(err);
+          console.log(result)
+          callback()
+        })
+      });
+    }
+
+
+    authenticateRequest(req, function(token) {
+      if(token != null) {
+        console.log("Is request authnticated?: " + token);
         var database = new Database();
         database.query(function(client) {
           const collection = client.db("oppschrifter").collection("recipes");
-          collection.findOne({_id: new ObjcetId(req.params.id)}, function(err, result) {
+          collection.findOne({_id: new ObjcetId(req.params.id), owner: token._id}, function(err, fetchedRecipe) {
             if(err) console.log(err);
-            console.log(result)
-            res.send(result);
+            updateViews(fetchedRecipe, token, function(){
+              res.send(fetchedRecipe);
+            })
           })
         });
       } else {
@@ -215,22 +230,39 @@ module.exports = function(app) {
     });
   });
 
+
+
   /**
    * Adds new recipe to db, needs to add user as uploader
    * @returns status
    */
   app.post('/api/recipe', function(req, res){
     console.log("Uploading recipe") 
-    authenticateRequest(req, function(result) {
-      if(result != null) {
+    authenticateRequest(req, function(token) {
+      
+      if(token != null) {
+        var object = {
+          name: req.body.name,
+          category: req.body.category,
+          hasLink: req.body.hasLink,
+          ingredients: req.body.ingredients,
+          amounts: req.body.amounts,
+          steps: req.body.steps,
+          url: req.body.url,
+          tags: req.body.tags,
+          dbTags: req.body.dbTags,
+          uploaded: req.body.uploaded,
+          viewed: req.body.viewed,
+          owner: result._id
+        }
         var database = new Database();
         database.query(function(client) {
           const collection = client.db("oppschrifter").collection("recipes");
-          collection.insertMany([
-            req.body
-          ]);
-          console.log("Uploaded")
-          res.send("Done");
+          collection.insertOne(object, function(err, result) {
+            if(err) console.log(err);
+            console.log("Uploaded")
+            res.send("Done");
+          });
         });
       } else {
         res.statusMessage = "Not authenticated";
