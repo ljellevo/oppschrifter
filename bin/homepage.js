@@ -5063,7 +5063,7 @@ pages_AddPage.__super__ = com_vige_core_DynamicComponent;
 pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 	addRecipe: function() {
 		var object;
-		var req = new haxe_http_HttpJs("http://localhost:3000/api/recipe");
+		var req = new haxe_http_HttpJs(Config.API_RECIP_POST);
 		var testFunc = function(data,callback) {
 			object = JSON.parse(data);
 			req.setHeader("Content-type","application/json");
@@ -5207,7 +5207,7 @@ pages_HomePage.__super__ = com_vige_core_DynamicComponent;
 pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 	getRecipe: function(callback) {
 		var _gthis = this;
-		new com_vige_core_SingleRequest({ url : "http://localhost:3000/api/recipes/" + this.searchInputController.getValue(), method : "GET", onComplete : function(res) {
+		new com_vige_core_SingleRequest({ url : Config.API_RECIPE + this.searchInputController.getValue(), method : "GET", onComplete : function(res) {
 			_gthis.setState(_gthis,function() {
 				haxe_Log.trace(res.get_content(),{ fileName : "src/pages/HomePage.hx", lineNumber : 42, className : "pages.HomePage", methodName : "getRecipe"});
 				var value = JSON.parse(res.get_content());
@@ -5364,7 +5364,7 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 	}
 	,getRecipe: function() {
 		var _gthis = this;
-		new com_vige_core_SingleRequest({ url : "http://localhost:3000/api/recipe/" + com_vige_core_Navigate.getParameters()[0], method : "GET", onComplete : function(res) {
+		new com_vige_core_SingleRequest({ url : Config.API_RECIPE_GET + com_vige_core_Navigate.getParameters()[0], method : "GET", onComplete : function(res) {
 			_gthis.setState(_gthis,function() {
 				var value = JSON.parse(res.get_content());
 				var recipe = new classes_Recipe();
@@ -5376,7 +5376,7 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		}}).request();
 	}
 	,deleteRecipe: function() {
-		new com_vige_core_SingleRequest({ url : "http://localhost:3000/api/recipe/" + com_vige_core_Navigate.getParameters()[0] + "/delete", method : "GET", onComplete : function(res) {
+		new com_vige_core_SingleRequest({ url : Config.API_RECIPE_DELETE + com_vige_core_Navigate.getParameters()[0] + "/delete", method : "GET", onComplete : function(res) {
 			com_vige_core_Navigate.to({ url : "/", hardRefresh : true});
 		}, onProgress : function() {
 		}, onError : function(error) {
@@ -5572,6 +5572,10 @@ js_Boot.__toStr = ({ }).toString;
 Config.API_AUTH = "https://oppschrifter.herokuapp.com/api/auth";
 Config.API_REGISTER = "https://oppschrifter.herokuapp.com/api/register";
 Config.API_LOGIN = "https://oppschrifter.herokuapp.com/api/login";
+Config.API_RECIPE_GET = "https://oppschrifter.herokuapp.com/api/recipe/";
+Config.API_RECIPE_DELETE = "https://oppschrifter.herokuapp.com/api/recipe/";
+Config.API_RECIPE = "https://oppschrifter.herokuapp.com/api/recipes/";
+Config.API_RECIP_POST = "https://oppschrifter.herokuapp.com/api/recipe";
 Xml.Element = 0;
 Xml.PCData = 1;
 Xml.CData = 2;
