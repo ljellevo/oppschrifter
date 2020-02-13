@@ -27,41 +27,45 @@ class Main {
   
       request(function(response){
         trace("Got the response via callback", response);
-        if(response == "true") {
           callback(response);
-        }
+        
       });
     }
 
     
-    auth(function(token) {
-      Navigate.routes = [
-        new HomePage(),
-        new AddPage(),
-        new RecipePage()
-
-      ];
+    auth(function(response) {
+      if(response == "true") {
+        Navigate.routes = [
+          new HomePage(),
+          new AddPage(),
+          new RecipePage()
   
-      Navigate.to({url: Browser.location.pathname, main: true});
-  
-      Browser.window.addEventListener('popstate', function(e) {
-        Navigate.navigationEvent();
-      });
-      body.globalBackgroundColor(new Color({backgroundColor: Colors.fromString("#fafafa")}));
-      body.init();
+        ];
+    
+        Navigate.to({url: Browser.location.pathname, main: true});
+    
+        Browser.window.addEventListener('popstate', function(e) {
+          Navigate.navigationEvent();
+        });
+        body.globalBackgroundColor(new Color({backgroundColor: Colors.fromString("#fafafa")}));
+        body.init();
+      } else {
+        Navigate.routes = [
+          new LoginPage(),
+          new RegisterPage()
+        ];
+    
+        Navigate.to({url: Browser.location.pathname, main: true});
+    
+        Browser.window.addEventListener('popstate', function(e) {
+          Navigate.navigationEvent();
+        });
+        body.init();
+      }
+      
     });
     
-    Navigate.routes = [
-      new LoginPage(),
-      new RegisterPage()
-    ];
-
-    Navigate.to({url: Browser.location.pathname, main: true});
-
-    Browser.window.addEventListener('popstate', function(e) {
-      Navigate.navigationEvent();
-    });
-    body.init();
+   
   }
 }
 

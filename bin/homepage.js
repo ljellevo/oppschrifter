@@ -98,27 +98,28 @@ Main.main = function() {
 		};
 		request(function(response1) {
 			haxe_Log.trace("Got the response via callback",{ fileName : "src/Main.hx", lineNumber : 29, className : "Main", methodName : "main", customParams : [response1]});
-			if(response1 == "true") {
-				callback(response1);
-			}
+			callback(response1);
 		});
 	};
-	auth(function(token) {
-		com_vige_core_Navigate.routes = [new pages_HomePage(),new pages_AddPage(),new pages_RecipePage()];
-		com_vige_core_Navigate.to({ url : window.location.pathname, main : true});
-		window.addEventListener("popstate",function(e) {
-			com_vige_core_Navigate.navigationEvent();
-		});
-		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		body.globalBackgroundColor(new com_vige_utils_Color({ backgroundColor : this1}));
-		body.init();
+	auth(function(response2) {
+		if(response2 == "true") {
+			com_vige_core_Navigate.routes = [new pages_HomePage(),new pages_AddPage(),new pages_RecipePage()];
+			com_vige_core_Navigate.to({ url : window.location.pathname, main : true});
+			window.addEventListener("popstate",function(e) {
+				com_vige_core_Navigate.navigationEvent();
+			});
+			var this1 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+			body.globalBackgroundColor(new com_vige_utils_Color({ backgroundColor : this1}));
+			body.init();
+		} else {
+			com_vige_core_Navigate.routes = [new pages_LoginPage(),new pages_RegisterPage()];
+			com_vige_core_Navigate.to({ url : window.location.pathname, main : true});
+			window.addEventListener("popstate",function(e1) {
+				com_vige_core_Navigate.navigationEvent();
+			});
+			body.init();
+		}
 	});
-	com_vige_core_Navigate.routes = [new pages_LoginPage(),new pages_RegisterPage()];
-	com_vige_core_Navigate.to({ url : window.location.pathname, main : true});
-	window.addEventListener("popstate",function(e1) {
-		com_vige_core_Navigate.navigationEvent();
-	});
-	body.init();
 };
 Math.__name__ = "Math";
 var Reflect = function() { };
