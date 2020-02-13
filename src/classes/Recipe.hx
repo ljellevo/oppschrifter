@@ -4,6 +4,10 @@ typedef RecipeStruct = {
   _id: String,
   name: String,
   category: String,
+  hasLink: Bool,
+  ingredients: Array<String>,
+  amounts: Array<String>,
+  steps: Array<String>,
   url: String,
   tags: String,
   uploaded: Float,
@@ -14,6 +18,10 @@ class Recipe {
   var id: String;
   var name: String;
   var category: String;
+  var hasLink: Bool;
+  var ingredients: Array<String>;
+  var amounts: Array<String>;
+  var steps: Array<String>;
   var url: String;
   var tags: String;
   var dbTags: String;
@@ -22,10 +30,14 @@ class Recipe {
   
   public function new() { }
 
-  public function constr(name: String, category: String, url: String, tags: String, ?id: String, ?uploaded: Float, ?viewed: Int) {
+  public function constr(name: String, category: String, hasLink: Bool, ingredients: Array<String>, amounts: Array<String>, steps: Array<String>, url: String, tags: String, ?id: String, ?uploaded: Float, ?viewed: Int) {
     this.id = id;
     this.name = name;
     this.category = category;
+    this.hasLink = hasLink;
+    this.ingredients = ingredients;
+    this.amounts = amounts;
+    this.steps = steps;
     this.url = url;
     this.tags = tags;
     this.dbTags = tags;
@@ -44,6 +56,22 @@ class Recipe {
 
   public function getCategory() :String {
     return category;
+  }
+
+  public function getHasLink(): Bool {
+    return hasLink;
+  }
+
+  public function getIngredients(): Array<String> {
+    return ingredients;
+  }
+
+  public function getAmounts(): Array<String> {
+    return amounts;
+  }
+
+  public function getSteps(): Array<String> {
+    return steps;
   }
 
   public function getUrl(): String {
@@ -70,6 +98,10 @@ class Recipe {
     var object = {
       name: name,
       category: category,
+      hasLink: hasLink,
+      ingredients: ingredients,
+      amounts: amounts,
+      steps: steps,
       url: url,
       tags: tags,
       dbTags: tags + " " + name + " " + category,

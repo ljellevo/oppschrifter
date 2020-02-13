@@ -44,6 +44,10 @@ class HomePage extends DynamicComponent {
             newRecipe.constr(
               value[i].name, 
               value[i].category,
+              value[i].hasLink,
+              value[i].ingredients,
+              value[i].amounts,
+              value[i].steps,
               value[i].url,
               value[i].tags,
               value[i]._id,
@@ -121,7 +125,7 @@ class HomePage extends DynamicComponent {
                   maxWidth: "450px",
                 }),
                 value: currentValue,
-                onchange: function() {
+                onChange: function() {
                   /*
                   currentValue = searchInputController.getValue();
                   getRecipe(function(token) {

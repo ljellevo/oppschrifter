@@ -451,10 +451,14 @@ var classes_Recipe = function() {
 };
 classes_Recipe.__name__ = "classes.Recipe";
 classes_Recipe.prototype = {
-	constr: function(name,category,url,tags,id,uploaded,viewed) {
+	constr: function(name,category,hasLink,ingredients,amounts,steps,url,tags,id,uploaded,viewed) {
 		this.id = id;
 		this.name = name;
 		this.category = category;
+		this.hasLink = hasLink;
+		this.ingredients = ingredients;
+		this.amounts = amounts;
+		this.steps = steps;
 		this.url = url;
 		this.tags = tags;
 		this.dbTags = tags;
@@ -469,6 +473,18 @@ classes_Recipe.prototype = {
 	}
 	,getCategory: function() {
 		return this.category;
+	}
+	,getHasLink: function() {
+		return this.hasLink;
+	}
+	,getIngredients: function() {
+		return this.ingredients;
+	}
+	,getAmounts: function() {
+		return this.amounts;
+	}
+	,getSteps: function() {
+		return this.steps;
 	}
 	,getUrl: function() {
 		return this.url;
@@ -486,7 +502,7 @@ classes_Recipe.prototype = {
 		this.viewed++;
 	}
 	,toJSON: function() {
-		var object = { name : this.name, category : this.category, url : this.url, tags : this.tags, dbTags : this.tags + " " + this.name + " " + this.category, uploaded : this.uploaded, viewed : this.viewed};
+		var object = { name : this.name, category : this.category, hasLink : this.hasLink, ingredients : this.ingredients, amounts : this.amounts, steps : this.steps, url : this.url, tags : this.tags, dbTags : this.tags + " " + this.name + " " + this.category, uploaded : this.uploaded, viewed : this.viewed};
 		return JSON.stringify(object);
 	}
 	,__class__: classes_Recipe
@@ -1860,12 +1876,14 @@ var com_vige_components_Input = function(arg) {
 	this.type = arg.type;
 	this.controller = arg.controller;
 	this.value = arg.value != null ? arg.value : "";
+	this.checked = arg.checked;
 	this.placeholder = arg.placeholder != null ? arg.placeholder : "";
 	this.autofocus = arg.autofocus != null && arg.autofocus;
 	this.pattern = arg.pattern != null ? arg.pattern : "(.*?)";
 	this.readOnly = arg.readOnly != null && arg.readOnly;
 	this.required = arg.required != null && arg.required;
-	this.onchange = arg.onchange;
+	this.onChange = arg.onChange;
+	this.onClick = arg.onClick;
 	this.color = arg.color;
 	this.border = arg.border;
 	this.padding = arg.padding;
@@ -1954,8 +1972,14 @@ com_vige_components_Input.prototype = {
 		input.pattern = this.pattern;
 		input.readOnly = this.readOnly;
 		input.required = this.required;
-		if(this.onchange != null) {
-			input.onkeyup = this.onchange;
+		if(this.onChange != null) {
+			input.onkeyup = this.onChange;
+		}
+		if(this.onClick != null) {
+			input.onclick = this.onClick;
+		}
+		if(this.checked != null) {
+			input.checked = this.checked;
 		}
 		new com_vige_support_StyleManager().addStyleToInput({ widget : input, color : this.color, border : this.border, padding : this.padding, margin : this.margin, size : this.size, overflow : this.overflow});
 		this.controller.setElement(input);
@@ -2447,7 +2471,6 @@ com_vige_core_DynamicComponent.prototype = {
 			oldComponent = this.page.render();
 		}
 		callback();
-		var newComponent = component.component().render();
 		com_vige_core_Navigate.updateComponent(component.component().render());
 	}
 	,init: function() {
@@ -5263,15 +5286,26 @@ js_Cookie.remove = function(name,path,domain) {
 };
 var pages_AddPage = function() {
 	this.stepAmount = 1;
+	this.stepControllersIntermediateValues = [];
 	this.stepControllers = [];
 	this.stepInputController = new com_vige_components_InputController();
+	this.amountControllersIntermediateValues = [];
+	this.amountController = [];
 	this.amountInputController = new com_vige_components_InputController();
+	this.ingredientControllersIntermediateValues = [];
+	this.ingredientController = [];
 	this.ingredientInputController = new com_vige_components_InputController();
+	this.ingredientAmount = 1;
+	this.tagsValue = "";
 	this.tagsInputController = new com_vige_components_InputController();
+	this.urlValue = "";
 	this.urlInputController = new com_vige_components_InputController();
 	this.linkInputController = new com_vige_components_InputController();
+	this.categoryValue = "";
 	this.categoryInputController = new com_vige_components_InputController();
+	this.nameValue = "";
 	this.nameInputController = new com_vige_components_InputController();
+	this.isLink = false;
 	this.status = "";
 	this.data = [];
 	com_vige_core_DynamicComponent.call(this);
@@ -5293,8 +5327,33 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			req.request(true);
 		};
 		testFunc(this.newRecipe.toJSON(),function(response1) {
-			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/AddPage.hx", lineNumber : 74, className : "pages.AddPage", methodName : "addRecipe", customParams : [response1]});
+			haxe_Log.trace("Got the response via callback",{ fileName : "src/pages/AddPage.hx", lineNumber : 67, className : "pages.AddPage", methodName : "addRecipe", customParams : [response1]});
 		});
+	}
+	,generateIngredients: function() {
+		var widgets = [];
+		var _g = 0;
+		var _g1 = this.ingredientAmount;
+		while(_g < _g1) {
+			var i = _g++;
+			var ingredientTempController = new com_vige_components_InputController();
+			var amountTempController = new com_vige_components_InputController();
+			var ingredientValue = "";
+			var amountValue = "";
+			if(i >= this.ingredientController.length) {
+				this.ingredientController.push(ingredientTempController);
+				this.amountController.push(amountTempController);
+				this.ingredientControllersIntermediateValues.push(ingredientValue);
+				this.amountControllersIntermediateValues.push(amountValue);
+			} else {
+				ingredientTempController = this.ingredientController[i];
+				amountTempController = this.amountController[i];
+				ingredientValue = this.ingredientControllersIntermediateValues[i];
+				amountValue = this.amountControllersIntermediateValues[i];
+			}
+			widgets.push(new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Row({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : [new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : ingredientTempController, placeholder : "Ingrediens", value : ingredientValue}),new com_vige_components_Container({ size : new com_vige_utils_Size({ width : "20px"})}),new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : amountTempController, placeholder : "Mengde", value : amountValue})]})})}));
+		}
+		return widgets;
 	}
 	,generateSteps: function() {
 		var widgets = [];
@@ -5303,14 +5362,64 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		while(_g < _g1) {
 			var i = _g++;
 			var controller = new com_vige_components_InputController();
+			var value = "";
 			if(i >= this.stepControllers.length) {
 				this.stepControllers.push(controller);
+				this.stepControllersIntermediateValues.push(value);
 			} else {
 				controller = this.stepControllers[i];
+				value = this.stepControllersIntermediateValues[i];
 			}
-			widgets.push(new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : controller, placeholder : "Steg " + (i + 1), value : controller.getValue(), size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}));
+			widgets.push(new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : controller, placeholder : "Steg " + (i + 1), value : value, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}));
 		}
 		return widgets;
+	}
+	,getCorrectSection: function() {
+		var _gthis = this;
+		if(this.isLink) {
+			return new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.urlInputController, placeholder : "Link til oppskrift", value : this.urlValue, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})});
+		} else {
+			var tmp = com_vige_utils_Padding.fromTRBL(30,0,30,0);
+			var tmp1 = new com_vige_support_Fonts("Poppins","sans-serif");
+			var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			var tmp2 = new com_vige_components_Container({ padding : tmp, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("Ingredienser",{ textSize : 20, font : tmp1, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})});
+			var tmp3 = new com_vige_components_Column({ children : this.generateIngredients()});
+			var tmp4 = new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("+"), onClick : function() {
+				_gthis.saveValues();
+				_gthis.setState(_gthis,function(e) {
+					_gthis.ingredientAmount++;
+				});
+			}})})});
+			var tmp5 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
+			var tmp6 = new com_vige_support_Fonts("Poppins","sans-serif");
+			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			return new com_vige_components_Column({ children : [tmp2,tmp3,tmp4,new com_vige_components_Container({ padding : tmp5, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("Steg",{ textSize : 20, font : tmp6, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this11})})})}),new com_vige_components_Column({ children : this.generateSteps()}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("+"), onClick : function() {
+				_gthis.saveValues();
+				_gthis.setState(_gthis,function(e1) {
+					_gthis.stepAmount++;
+				});
+			}})})})]});
+		}
+	}
+	,saveValues: function() {
+		this.nameValue = this.nameInputController.getValue();
+		this.categoryValue = this.categoryInputController.getValue();
+		this.urlValue = this.urlInputController.getValue();
+		this.tagsValue = this.tagsInputController.getValue();
+		this.linkValue = this.linkInputController.getElement().checked;
+		var _g = 0;
+		var _g1 = this.ingredientController.length;
+		while(_g < _g1) {
+			var i = _g++;
+			this.ingredientControllersIntermediateValues[i] = this.ingredientController[i].getValue();
+			this.amountControllersIntermediateValues[i] = this.amountController[i].getValue();
+		}
+		var _g2 = 0;
+		var _g3 = this.stepControllers.length;
+		while(_g2 < _g3) {
+			var i1 = _g2++;
+			this.stepControllersIntermediateValues[i1] = this.stepControllers[i1].getValue();
+		}
 	}
 	,component: function() {
 		var _gthis = this;
@@ -5321,38 +5430,19 @@ pages_AddPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var tmp4 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
 		var tmp5 = new com_vige_support_Fonts("Poppins","sans-serif");
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		var tmp6 = new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})});
-		var tmp7 = new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.nameInputController, placeholder : "Navn på oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})});
-		var tmp8 = new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.categoryInputController, placeholder : "Kategori", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})});
-		var tmp9 = new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Row({ flex : true, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : [new com_vige_components_Text("Link?",{ size : new com_vige_utils_Size({ width : "10px"})}),new com_vige_components_Input({ type : com_vige_support_InputType.Checkbox, controller : this.linkInputController, placeholder : "Stikkord", size : new com_vige_utils_Size({ width : "10px"})})], mainAxisAlignment : com_vige_support_MainAxisAlignment.Left})})});
-		var tmp10 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
-		var tmp11 = new com_vige_support_Fonts("Poppins","sans-serif");
-		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		var tmp12 = new com_vige_components_Container({ padding : tmp10, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("Ingredienser",{ textSize : 20, font : tmp11, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this11})})})});
-		var tmp13 = new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Row({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : [new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.ingredientInputController, placeholder : "Ingrediens"}),new com_vige_components_Container({ size : new com_vige_utils_Size({ width : "20px"})}),new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.amountInputController, placeholder : "Mengde"})]})})});
-		var tmp14 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
-		var tmp15 = new com_vige_support_Fonts("Poppins","sans-serif");
-		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ navbar : tmp, route : "/add", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,tmp6,tmp7,tmp8,tmp9,tmp12,tmp13,new com_vige_components_Container({ padding : tmp14, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("Steg",{ textSize : 20, font : tmp15, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this12})})})}),new com_vige_components_Column({ children : this.generateSteps()}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("+"), onClick : function() {
-			_gthis.setState(_gthis,function(e) {
-				_gthis.stepAmount++;
+		this.page = new com_vige_components_Page({ navbar : tmp, route : "/add", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("NY",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.nameInputController, placeholder : "Navn på oppskrift", value : this.nameValue, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.categoryInputController, placeholder : "Kategori", value : this.categoryValue, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Row({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : [new com_vige_components_Text("Vil du legge til en link?",{ size : new com_vige_utils_Size({ width : "10px"})}),new com_vige_components_Input({ type : com_vige_support_InputType.Checkbox, margin : com_vige_utils_Margin.fromTRBL(0,0,0,10), controller : this.linkInputController, placeholder : "Stikkord", size : new com_vige_utils_Size({ width : "10px"}), checked : this.linkValue, onClick : function() {
+			_gthis.linkValue = _gthis.linkInputController.getElement().checked;
+			_gthis.setState(_gthis,function() {
+				if(_gthis.isLink) {
+					_gthis.isLink = false;
+				} else {
+					_gthis.isLink = true;
+				}
 			});
-		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.urlInputController, placeholder : "Link til oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.tagsInputController, placeholder : "Stikkord", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Legg til"), onClick : function() {
-			haxe_Log.trace("Added",{ fileName : "src/pages/AddPage.hx", lineNumber : 336, className : "pages.AddPage", methodName : "component"});
-			if(_gthis.nameInputController.getValue() == "") {
-				return;
-			}
-			if(_gthis.categoryInputController.getValue() == "") {
-				return;
-			}
-			if(_gthis.urlInputController.getValue() == "") {
-				return;
-			}
-			if(_gthis.tagsInputController.getValue() == "") {
-				return;
-			}
+		}})], mainAxisAlignment : com_vige_support_MainAxisAlignment.Left})})}),this.getCorrectSection(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.tagsInputController, placeholder : "Stikkord", value : this.tagsValue, size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Legg til"), onClick : function() {
+			_gthis.saveValues();
 			_gthis.newRecipe = new classes_Recipe();
-			_gthis.newRecipe.constr(_gthis.nameInputController.getValue(),_gthis.categoryInputController.getValue(),_gthis.urlInputController.getValue(),_gthis.tagsInputController.getValue());
+			_gthis.newRecipe.constr(_gthis.nameInputController.getValue(),_gthis.categoryInputController.getValue(),_gthis.isLink,_gthis.ingredientControllersIntermediateValues,_gthis.amountControllersIntermediateValues,_gthis.stepControllersIntermediateValues,_gthis.urlInputController.getValue(),_gthis.tagsInputController.getValue());
 			_gthis.addRecipe();
 		}})})})]})});
 		return this.page;
@@ -5379,7 +5469,7 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 				while(_g < _g1) {
 					var i = _g++;
 					var newRecipe = new classes_Recipe();
-					newRecipe.constr(value[i].name,value[i].category,value[i].url,value[i].tags,value[i]._id,value[i].uploaded,value[i].viewed);
+					newRecipe.constr(value[i].name,value[i].category,value[i].hasLink,value[i].ingredients,value[i].amounts,value[i].steps,value[i].url,value[i].tags,value[i]._id,value[i].uploaded,value[i].viewed);
 					recipes.push(newRecipe);
 				}
 				_gthis.data = recipes;
@@ -5394,7 +5484,7 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			if(e.keyCode == 13) {
 				_gthis.currentValue = _gthis.searchInputController.getValue();
 				_gthis.getRecipe(function(token) {
-					haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 72, className : "pages.HomePage", methodName : "component"});
+					haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 76, className : "pages.HomePage", methodName : "component"});
 				});
 			}
 		});
@@ -5405,12 +5495,12 @@ pages_HomePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var tmp4 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
 		var tmp5 = new com_vige_support_Fonts("Poppins","sans-serif");
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ navbar : tmp, route : "/", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("OPPSCHRIFTER",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.searchInputController, placeholder : "Søk etter oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), value : this.currentValue, onchange : function() {
+		this.page = new com_vige_components_Page({ navbar : tmp, route : "/", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("OPPSCHRIFTER",{ textSize : 40, font : tmp5, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.searchInputController, placeholder : "Søk etter oppskrift", size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), value : this.currentValue, onChange : function() {
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Search"), onClick : function() {
-			haxe_Log.trace("Search was clicked",{ fileName : "src/pages/HomePage.hx", lineNumber : 142, className : "pages.HomePage", methodName : "component"});
+			haxe_Log.trace("Search was clicked",{ fileName : "src/pages/HomePage.hx", lineNumber : 146, className : "pages.HomePage", methodName : "component"});
 			_gthis.currentValue = _gthis.searchInputController.getValue();
 			_gthis.getRecipe(function(token1) {
-				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 145, className : "pages.HomePage", methodName : "component"});
+				haxe_Log.trace("Login was successfull and token was recived",{ fileName : "src/pages/HomePage.hx", lineNumber : 149, className : "pages.HomePage", methodName : "component"});
 			});
 		}})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : new com_vige_utils_Size({ width : "75%", maxWidth : "450px"}), children : com_vige_components_Constructors.constructRows({ data : this.data, elementsInEachRow : 1, elementBuilder : function(iterator) {
 			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
@@ -5496,15 +5586,15 @@ pages_LoginPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 		var tmp3 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
 		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
 		var tmp4 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this1})});
-		var this2 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-		var tmp5 = [tmp4,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this2})})];
-		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-		var tmp6 = new com_vige_utils_Color({ backgroundColor : this3});
+		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+		var tmp5 = [tmp4,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this11})})];
+		var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+		var tmp6 = new com_vige_utils_Color({ backgroundColor : this12});
 		var tmp7 = new com_vige_utils_Size({ width : "300px"});
 		var tmp8 = com_vige_utils_Padding.fromTRBL(30,0,30,0);
 		var tmp9 = new com_vige_support_Fonts("Poppins","sans-serif");
-		var this4 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-		this.page = new com_vige_components_Page({ route : "/", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp5, color : tmp6, size : tmp7, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("LOGG INN",{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this4})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Register"), onClick : function() {
+		var this13 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+		this.page = new com_vige_components_Page({ route : "/", child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Center({ margin : tmp3, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp5, color : tmp6, size : tmp7, child : new com_vige_components_Column({ children : [new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text("LOGG INN",{ textSize : 40, font : tmp9, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this13})})})}),this.infoLable(),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Search, controller : this.usernameInputController, placeholder : "Brukernavn", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Input({ type : com_vige_support_InputType.Password, controller : this.passwordInputController, placeholder : "Passord", size : new com_vige_utils_Size({ width : "50%", maxWidth : "250px"})})})}),new com_vige_components_Container({ padding : com_vige_utils_Padding.fromTRBL(0,0,30,0), child : new com_vige_components_Row({ children : [new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Register"), onClick : function() {
 			haxe_Log.trace("Logg inn was clicked",{ fileName : "src/pages/LoginPage.hx", lineNumber : 153, className : "pages.LoginPage", methodName : "component"});
 			com_vige_core_Navigate.to({ url : "/register"});
 		}})}),new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Button({ child : new com_vige_components_Text("Logg inn"), onClick : function() {
@@ -5533,49 +5623,85 @@ pages_RecipePage.prototype = $extend(com_vige_core_DynamicComponent.prototype,{
 			_gthis.setState(_gthis,function() {
 				var value = JSON.parse(res.get_content());
 				var recipe = new classes_Recipe();
-				recipe.constr(value.name,value.category,value.url,value.tags,value._id,value.uploaded,value.viewed);
+				recipe.constr(value.name,value.category,value.hasLink,value.ingredients,value.amounts,value.steps,value.url,value.tags,value._id,value.uploaded,value.viewed);
 				_gthis.data = recipe;
 			});
 		}, onProgress : function() {
+			_gthis.data = null;
 		}, onError : function(error) {
 		}}).request();
 	}
-	,component: function() {
+	,isLink: function() {
 		var _gthis = this;
+		if(this.data.getHasLink()) {
+			var tmp = com_vige_utils_Padding.fromTRBL(0,0,30,0);
+			var tmp1 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
+			var this1 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			var tmp2 = new com_vige_components_Text("Link til oppskrift",{ color : new com_vige_utils_Color({ color : this1})});
+			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+			var tmp3 = new com_vige_utils_Color({ backgroundColor : this11});
+			var tmp4 = new com_vige_utils_Size({ width : "100%"});
+			var this12 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp5 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this12})});
+			var this13 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp6 = [tmp5,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this13})})];
+			var tmp7 = com_vige_utils_Padding.all(20);
+			var this14 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			return new com_vige_components_Container({ padding : tmp, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : tmp1, children : [tmp2,new com_vige_components_Action({ onClick : function() {
+				com_vige_core_Navigate.link({ url : _gthis.data.getUrl()});
+			}, child : new com_vige_components_Container({ color : tmp3, size : tmp4, shadow : tmp6, padding : tmp7, child : new com_vige_components_Row({ flex : true, children : [new com_vige_components_Text("godt.no",{ color : new com_vige_utils_Color({ color : this14}), textSize : 20})]})})})]})})});
+		}
+		return new com_vige_components_Container({ });
+	}
+	,generateSteps: function() {
+		var _gthis = this;
+		if(this.data.getHasLink()) {
+			return new com_vige_components_Container({ });
+		}
+		var this1 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+		var tmp = new com_vige_components_Text("Ingredienser",{ color : new com_vige_utils_Color({ color : this1})});
+		var tmp1 = new com_vige_components_Column({ children : com_vige_components_Constructors.constructRows({ data : this.data.getIngredients(), elementsInEachRow : 1, elementBuilder : function(i) {
+			return new com_vige_components_Text(" - " + _gthis.data.getIngredients()[i] + " " + _gthis.data.getAmounts()[i]);
+		}, rowBuilder : function(children) {
+			return new com_vige_components_Row({ children : children});
+		}})});
+		var tmp2 = new com_vige_components_Container({ size : new com_vige_utils_Size({ height : "30px"})});
+		var this11 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+		return new com_vige_components_Container({ child : new com_vige_components_Column({ children : [tmp,tmp1,tmp2,new com_vige_components_Text("Fremgangsmåte",{ color : new com_vige_utils_Color({ color : this11})}),new com_vige_components_Column({ children : com_vige_components_Constructors.constructRows({ data : this.data.getSteps(), elementsInEachRow : 1, elementBuilder : function(i1) {
+			return new com_vige_components_Text(Std.string(i1 + 1) + ". " + _gthis.data.getSteps()[i1]);
+		}, rowBuilder : function(children1) {
+			return new com_vige_components_Row({ children : children1});
+		}})})]})});
+	}
+	,component: function() {
 		if(this.data != null) {
 			var tmp = new components_CustomNavbar().navbarComponent();
 			var tmp1 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
 			var tmp2 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
 			var tmp3 = new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})});
-			var tmp4 = com_vige_utils_Padding.fromTRBL(30,0,0,0);
-			var tmp5 = this.data.getName() != null ? this.data.getName() : "";
-			var tmp6 = new com_vige_support_Fonts("Poppins","sans-serif");
-			var this1 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-			var tmp7 = new com_vige_components_Container({ padding : tmp4, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text(tmp5,{ textSize : 40, font : tmp6, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this1})})})});
-			var tmp8 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
-			var tmp9 = this.data.getCategory();
-			var this2 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			var tmp10 = new com_vige_components_Container({ padding : tmp8, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Text(tmp9,{ color : new com_vige_utils_Color({ color : this2})})})});
-			var tmp11 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
-			var tmp12 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
-			var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
-			var tmp13 = new com_vige_utils_Color({ backgroundColor : this3});
-			var tmp14 = com_vige_utils_Margin.fromTRBL(0,0,20,0);
-			var tmp15 = new com_vige_utils_Size({ width : "100%"});
-			var this4 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp16 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this4})});
-			var this5 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
-			var tmp17 = [tmp16,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "0px", blur : "2px", color : new com_vige_utils_Color({ backgroundColor : this5})})];
-			var tmp18 = com_vige_utils_Padding.all(20);
-			var tmp19 = new com_vige_components_Image({ src : "./assets/pancake.jpg", height : 100, width : 100});
-			var tmp20 = new com_vige_components_Container({ size : new com_vige_utils_Size({ width : "40px"})});
-			var this6 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
-			var tmp21 = new com_vige_components_Action({ onClick : function() {
-				com_vige_core_Navigate.link({ url : _gthis.data.getUrl()});
-			}, child : new com_vige_components_Container({ color : tmp13, margin : tmp14, size : tmp15, shadow : tmp17, padding : tmp18, child : new com_vige_components_Row({ flex : true, children : [tmp19,tmp20,new com_vige_components_Column({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.Center, children : [new com_vige_components_Row({ children : [new com_vige_components_Text("godt.no",{ color : new com_vige_utils_Color({ color : this6}), textSize : 20})], flex : true, mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, crossAxisAlignment : com_vige_support_CrossAxisAlignment.SpaceAround, equalElementWidth : false, size : new com_vige_utils_Size({ height : "100%"})})]})]})})});
-			var tmp22 = this.data.getTags();
-			var this7 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
-			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,tmp7,tmp10,new com_vige_components_Container({ padding : tmp11, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Column({ size : tmp12, children : [tmp21,new com_vige_components_Text(tmp22,{ color : new com_vige_utils_Color({ color : this7})})]})})})]})});
+			var tmp4 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
+			var this1 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp5 = new com_vige_utils_Shadow({ horizontal : "0px", vertical : "4px", blur : "6px", color : new com_vige_utils_Color({ backgroundColor : this1})});
+			var this11 = Std.parseInt("0xff" + HxOverrides.substr("#CDCDCD",1,null));
+			var tmp6 = [tmp5,new com_vige_utils_Shadow({ horizontal : "0px", vertical : "6px", blur : "20px", color : new com_vige_utils_Color({ backgroundColor : this11})})];
+			var this12 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
+			var tmp7 = new com_vige_utils_Color({ backgroundColor : this12});
+			var tmp8 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
+			var tmp9 = com_vige_utils_Padding.all(30);
+			var tmp10 = com_vige_utils_Padding.fromTRBL(0,0,0,0);
+			var tmp11 = this.data.getName() != null ? this.data.getName() : "";
+			var tmp12 = new com_vige_support_Fonts("Poppins","sans-serif");
+			var this13 = Std.parseInt("0xff" + HxOverrides.substr("#2e3440",1,null));
+			var tmp13 = new com_vige_components_Container({ padding : tmp10, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Text(tmp11,{ textSize : 40, font : tmp12, fontWeight : com_vige_support_FontWeight.W900, color : new com_vige_utils_Color({ color : this13})})})});
+			var tmp14 = com_vige_utils_Padding.fromTRBL(0,0,30,0);
+			var tmp15 = this.data.getCategory();
+			var this14 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			var tmp16 = new com_vige_components_Center({ margin : tmp4, alignment : com_vige_support_CenterAlignment.Both, child : new com_vige_components_Container({ shadow : tmp6, color : tmp7, size : tmp8, padding : tmp9, child : new com_vige_components_Column({ children : [tmp13,new com_vige_components_Container({ padding : tmp14, child : new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Text(tmp15,{ color : new com_vige_utils_Color({ color : this14})})})}),this.isLink(),this.generateSteps()]})})});
+			var tmp17 = new com_vige_utils_Size({ width : "75%", maxWidth : "450px"});
+			var tmp18 = com_vige_utils_Margin.fromTRBL(30,0,0,0);
+			var tmp19 = this.data.getTags();
+			var this15 = Std.parseInt("0xff" + HxOverrides.substr("#A4A4A4",1,null));
+			this.page = new com_vige_components_Page({ navbar : tmp, route : "/recipe/:id", child : new com_vige_components_Column({ children : [tmp1,tmp2,tmp3,tmp16,new com_vige_components_Center({ alignment : com_vige_support_CenterAlignment.Horizontal, child : new com_vige_components_Container({ size : tmp17, margin : tmp18, child : new com_vige_components_Text(tmp19,{ color : new com_vige_utils_Color({ color : this15}), textAlignment : com_vige_support_TextAlign.Center})})})]})});
 			return this.page;
 		} else {
 			this.page = new com_vige_components_Page({ navbar : new components_CustomNavbar().navbarComponent(), route : "/recipe/:id", child : new com_vige_components_Column({ children : [new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16711681}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -65536}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})}),new com_vige_components_Container({ color : new com_vige_utils_Color({ backgroundColor : -16776961}), size : new com_vige_utils_Size({ width : "100%", height : "20px"})})]})});

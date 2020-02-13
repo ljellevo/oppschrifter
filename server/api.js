@@ -9,12 +9,13 @@ module.exports = function(app) {
   var mostViewed = {viewed: -1};
   var oldestFirst = {uploaded: 1};
 
-
+  
   /**
    * Authenticates cookie
    * @returns Bool
    */
   app.post('/api/auth', function(req, res){
+    console.log(req.headers.cookie)
     if(!req.headers.cookie) {
       res.send(false);
       return;
@@ -219,6 +220,7 @@ module.exports = function(app) {
    * @returns status
    */
   app.post('/api/recipe', function(req, res){
+    console.log("Uploading recipe") 
     authenticateRequest(req, function(result) {
       if(result != null) {
         var database = new Database();
@@ -227,6 +229,7 @@ module.exports = function(app) {
           collection.insertMany([
             req.body
           ]);
+          console.log("Uploaded")
           res.send("Done");
         });
       } else {
