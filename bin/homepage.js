@@ -85,7 +85,7 @@ Main.main = function() {
 	body.setGlobalTitle("OPPSCHRIFTER");
 	var auth = function(callback) {
 		var object;
-		var req = new haxe_http_HttpJs("http://localhost:3000/api/auth");
+		var req = new haxe_http_HttpJs("https://oppschrifter.herokuapp.com/api/auth");
 		var request = function(callback1) {
 			var request1 = "Bearer" + js_Cookie.get("credentials");
 			req.setHeader("Authorization",request1);
