@@ -44,7 +44,7 @@ class CustomNavbar extends DynamicComponent {
     }
 
     return new Button({
-      size: new Size({height: "40px", width: "70px"}),
+      size: new Size({height: "40px", width: "90px"}),
       color: new Color({color: Colors.BLACK, backgroundColor: Colors.fromString("#fafafa")}),
       border: determineBorder(),
       child: new Row({

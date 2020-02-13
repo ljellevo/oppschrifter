@@ -3591,7 +3591,7 @@ components_CustomNavbar.prototype = $extend(com_vige_core_DynamicComponent.proto
 			}
 			return null;
 		};
-		var tmp = new com_vige_utils_Size({ height : "40px", width : "70px"});
+		var tmp = new com_vige_utils_Size({ height : "40px", width : "90px"});
 		var this3 = Std.parseInt("0xff" + HxOverrides.substr("#fafafa",1,null));
 		return new com_vige_components_Button({ size : tmp, color : new com_vige_utils_Color({ color : -16777216, backgroundColor : this3}), border : determineBorder(), child : new com_vige_components_Row({ mainAxisAlignment : com_vige_support_MainAxisAlignment.Center, children : getButtonContents(text,src)}), isLink : false, onClick : function(e) {
 			if(url == "https://github.com/ljellevo/mist.io") {
