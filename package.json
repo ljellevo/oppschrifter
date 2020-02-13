@@ -1,7 +1,8 @@
 {
   "version": "1.0.0",
   "scripts": {
-    "start": "nodemon ./server/server.js & live-server ./bin/",
+    "start": "nodemon ./server/server.js",
+    "start-prod": "nodemon ./server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
