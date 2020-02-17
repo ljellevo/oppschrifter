@@ -1,5 +1,7 @@
 haxe build.hxml
+echo "https://oppschrifter.herokuapp.com" > 'env.conf'
 git add .
 git commit -m "$*"
 git push
 git push heroku master
+echo "http://localhost:3000" > 'env.conf'

@@ -1,4 +1,5 @@
 -lib VIGE
+-resource env.conf@url
 -cp src
 --js bin/homepage.js
 --main Main
