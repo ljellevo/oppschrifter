@@ -7,135 +7,29 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
-var haxe_Resource = function() { };
-haxe_Resource.__name__ = "haxe.Resource";
-haxe_Resource.getString = function(name) {
-	var _g = 0;
-	var _g1 = haxe_Resource.content;
-	while(_g < _g1.length) {
-		var x = _g1[_g];
-		++_g;
-		if(x.name == name) {
-			if(x.str != null) {
-				return x.str;
-			}
-			var b = haxe_crypto_Base64.decode(x.data);
-			return b.toString();
-		}
-	}
-	return null;
+var Config = function() { };
+Config.__name__ = "Config";
+var EReg = function(r,opt) {
+	this.r = new RegExp(r,opt.split("u").join(""));
 };
-var haxe_io_Bytes = function(data) {
-	this.length = data.byteLength;
-	this.b = new Uint8Array(data);
-	this.b.bufferValue = data;
-	data.hxBytes = this;
-	data.bytes = this.b;
-};
-haxe_io_Bytes.__name__ = "haxe.io.Bytes";
-haxe_io_Bytes.ofString = function(s,encoding) {
-	if(encoding == haxe_io_Encoding.RawNative) {
-		var buf = new Uint8Array(s.length << 1);
-		var _g = 0;
-		var _g1 = s.length;
-		while(_g < _g1) {
-			var i = _g++;
-			var c = s.charCodeAt(i);
-			buf[i << 1] = c & 255;
-			buf[i << 1 | 1] = c >> 8;
+EReg.__name__ = "EReg";
+EReg.prototype = {
+	match: function(s) {
+		if(this.r.global) {
+			this.r.lastIndex = 0;
 		}
-		return new haxe_io_Bytes(buf.buffer);
+		this.r.m = this.r.exec(s);
+		this.r.s = s;
+		return this.r.m != null;
 	}
-	var a = [];
-	var i1 = 0;
-	while(i1 < s.length) {
-		var c1 = s.charCodeAt(i1++);
-		if(55296 <= c1 && c1 <= 56319) {
-			c1 = c1 - 55232 << 10 | s.charCodeAt(i1++) & 1023;
-		}
-		if(c1 <= 127) {
-			a.push(c1);
-		} else if(c1 <= 2047) {
-			a.push(192 | c1 >> 6);
-			a.push(128 | c1 & 63);
-		} else if(c1 <= 65535) {
-			a.push(224 | c1 >> 12);
-			a.push(128 | c1 >> 6 & 63);
-			a.push(128 | c1 & 63);
+	,matched: function(n) {
+		if(this.r.m != null && n >= 0 && n < this.r.m.length) {
+			return this.r.m[n];
 		} else {
-			a.push(240 | c1 >> 18);
-			a.push(128 | c1 >> 12 & 63);
-			a.push(128 | c1 >> 6 & 63);
-			a.push(128 | c1 & 63);
+			throw new js__$Boot_HaxeError("EReg::matched");
 		}
 	}
-	return new haxe_io_Bytes(new Uint8Array(a).buffer);
-};
-haxe_io_Bytes.prototype = {
-	getString: function(pos,len,encoding) {
-		if(pos < 0 || len < 0 || pos + len > this.length) {
-			throw new js__$Boot_HaxeError(haxe_io_Error.OutsideBounds);
-		}
-		if(encoding == null) {
-			encoding = haxe_io_Encoding.UTF8;
-		}
-		var s = "";
-		var b = this.b;
-		var i = pos;
-		var max = pos + len;
-		switch(encoding._hx_index) {
-		case 0:
-			var debug = pos > 0;
-			while(i < max) {
-				var c = b[i++];
-				if(c < 128) {
-					if(c == 0) {
-						break;
-					}
-					s += String.fromCodePoint(c);
-				} else if(c < 224) {
-					var code = (c & 63) << 6 | b[i++] & 127;
-					s += String.fromCodePoint(code);
-				} else if(c < 240) {
-					var c2 = b[i++];
-					var code1 = (c & 31) << 12 | (c2 & 127) << 6 | b[i++] & 127;
-					s += String.fromCodePoint(code1);
-				} else {
-					var c21 = b[i++];
-					var c3 = b[i++];
-					var u = (c & 15) << 18 | (c21 & 127) << 12 | (c3 & 127) << 6 | b[i++] & 127;
-					s += String.fromCodePoint(u);
-				}
-			}
-			break;
-		case 1:
-			while(i < max) {
-				var c1 = b[i++] | b[i++] << 8;
-				s += String.fromCodePoint(c1);
-			}
-			break;
-		}
-		return s;
-	}
-	,toString: function() {
-		return this.getString(0,this.length);
-	}
-	,__class__: haxe_io_Bytes
-};
-var haxe_io_Encoding = $hxEnums["haxe.io.Encoding"] = { __ename__ : true, __constructs__ : ["UTF8","RawNative"]
-	,UTF8: {_hx_index:0,__enum__:"haxe.io.Encoding",toString:$estr}
-	,RawNative: {_hx_index:1,__enum__:"haxe.io.Encoding",toString:$estr}
-};
-var haxe_crypto_Base64 = function() { };
-haxe_crypto_Base64.__name__ = "haxe.crypto.Base64";
-haxe_crypto_Base64.decode = function(str,complement) {
-	if(complement == null) {
-		complement = true;
-	}
-	if(complement) {
-		while(HxOverrides.cca(str,str.length - 1) == 61) str = HxOverrides.substr(str,0,-1);
-	}
-	return new haxe_crypto_BaseCode(haxe_crypto_Base64.BYTES).decodeBytes(haxe_io_Bytes.ofString(str));
+	,__class__: EReg
 };
 var HxOverrides = function() { };
 HxOverrides.__name__ = "HxOverrides";
@@ -172,87 +66,6 @@ HxOverrides.iter = function(a) {
 	}, next : function() {
 		return this.arr[this.cur++];
 	}};
-};
-var haxe_crypto_BaseCode = function(base) {
-	var len = base.length;
-	var nbits = 1;
-	while(len > 1 << nbits) ++nbits;
-	if(nbits > 8 || len != 1 << nbits) {
-		throw new js__$Boot_HaxeError("BaseCode : base length must be a power of two.");
-	}
-	this.base = base;
-	this.nbits = nbits;
-};
-haxe_crypto_BaseCode.__name__ = "haxe.crypto.BaseCode";
-haxe_crypto_BaseCode.prototype = {
-	initTable: function() {
-		var tbl = [];
-		var _g = 0;
-		while(_g < 256) {
-			var i = _g++;
-			tbl[i] = -1;
-		}
-		var _g1 = 0;
-		var _g2 = this.base.length;
-		while(_g1 < _g2) {
-			var i1 = _g1++;
-			tbl[this.base.b[i1]] = i1;
-		}
-		this.tbl = tbl;
-	}
-	,decodeBytes: function(b) {
-		var nbits = this.nbits;
-		var base = this.base;
-		if(this.tbl == null) {
-			this.initTable();
-		}
-		var tbl = this.tbl;
-		var size = b.length * nbits >> 3;
-		var out = new haxe_io_Bytes(new ArrayBuffer(size));
-		var buf = 0;
-		var curbits = 0;
-		var pin = 0;
-		var pout = 0;
-		while(pout < size) {
-			while(curbits < 8) {
-				curbits += nbits;
-				buf <<= nbits;
-				var i = tbl[b.b[pin++]];
-				if(i == -1) {
-					throw new js__$Boot_HaxeError("BaseCode : invalid encoded char");
-				}
-				buf |= i;
-			}
-			curbits -= 8;
-			out.b[pout++] = buf >> curbits & 255;
-		}
-		return out;
-	}
-	,__class__: haxe_crypto_BaseCode
-};
-var Config = function() { };
-Config.__name__ = "Config";
-var EReg = function(r,opt) {
-	this.r = new RegExp(r,opt.split("u").join(""));
-};
-EReg.__name__ = "EReg";
-EReg.prototype = {
-	match: function(s) {
-		if(this.r.global) {
-			this.r.lastIndex = 0;
-		}
-		this.r.m = this.r.exec(s);
-		this.r.s = s;
-		return this.r.m != null;
-	}
-	,matched: function(n) {
-		if(this.r.m != null && n >= 0 && n < this.r.m.length) {
-			return this.r.m[n];
-		} else {
-			throw new js__$Boot_HaxeError("EReg::matched");
-		}
-	}
-	,__class__: EReg
 };
 var Lambda = function() { };
 Lambda.__name__ = "Lambda";
@@ -4306,6 +4119,107 @@ haxe_http_HttpJs.prototype = $extend(haxe_http_HttpBase.prototype,{
 	}
 	,__class__: haxe_http_HttpJs
 });
+var haxe_io_Bytes = function(data) {
+	this.length = data.byteLength;
+	this.b = new Uint8Array(data);
+	this.b.bufferValue = data;
+	data.hxBytes = this;
+	data.bytes = this.b;
+};
+haxe_io_Bytes.__name__ = "haxe.io.Bytes";
+haxe_io_Bytes.ofString = function(s,encoding) {
+	if(encoding == haxe_io_Encoding.RawNative) {
+		var buf = new Uint8Array(s.length << 1);
+		var _g = 0;
+		var _g1 = s.length;
+		while(_g < _g1) {
+			var i = _g++;
+			var c = s.charCodeAt(i);
+			buf[i << 1] = c & 255;
+			buf[i << 1 | 1] = c >> 8;
+		}
+		return new haxe_io_Bytes(buf.buffer);
+	}
+	var a = [];
+	var i1 = 0;
+	while(i1 < s.length) {
+		var c1 = s.charCodeAt(i1++);
+		if(55296 <= c1 && c1 <= 56319) {
+			c1 = c1 - 55232 << 10 | s.charCodeAt(i1++) & 1023;
+		}
+		if(c1 <= 127) {
+			a.push(c1);
+		} else if(c1 <= 2047) {
+			a.push(192 | c1 >> 6);
+			a.push(128 | c1 & 63);
+		} else if(c1 <= 65535) {
+			a.push(224 | c1 >> 12);
+			a.push(128 | c1 >> 6 & 63);
+			a.push(128 | c1 & 63);
+		} else {
+			a.push(240 | c1 >> 18);
+			a.push(128 | c1 >> 12 & 63);
+			a.push(128 | c1 >> 6 & 63);
+			a.push(128 | c1 & 63);
+		}
+	}
+	return new haxe_io_Bytes(new Uint8Array(a).buffer);
+};
+haxe_io_Bytes.prototype = {
+	getString: function(pos,len,encoding) {
+		if(pos < 0 || len < 0 || pos + len > this.length) {
+			throw new js__$Boot_HaxeError(haxe_io_Error.OutsideBounds);
+		}
+		if(encoding == null) {
+			encoding = haxe_io_Encoding.UTF8;
+		}
+		var s = "";
+		var b = this.b;
+		var i = pos;
+		var max = pos + len;
+		switch(encoding._hx_index) {
+		case 0:
+			var debug = pos > 0;
+			while(i < max) {
+				var c = b[i++];
+				if(c < 128) {
+					if(c == 0) {
+						break;
+					}
+					s += String.fromCodePoint(c);
+				} else if(c < 224) {
+					var code = (c & 63) << 6 | b[i++] & 127;
+					s += String.fromCodePoint(code);
+				} else if(c < 240) {
+					var c2 = b[i++];
+					var code1 = (c & 31) << 12 | (c2 & 127) << 6 | b[i++] & 127;
+					s += String.fromCodePoint(code1);
+				} else {
+					var c21 = b[i++];
+					var c3 = b[i++];
+					var u = (c & 15) << 18 | (c21 & 127) << 12 | (c3 & 127) << 6 | b[i++] & 127;
+					s += String.fromCodePoint(u);
+				}
+			}
+			break;
+		case 1:
+			while(i < max) {
+				var c1 = b[i++] | b[i++] << 8;
+				s += String.fromCodePoint(c1);
+			}
+			break;
+		}
+		return s;
+	}
+	,toString: function() {
+		return this.getString(0,this.length);
+	}
+	,__class__: haxe_io_Bytes
+};
+var haxe_io_Encoding = $hxEnums["haxe.io.Encoding"] = { __ename__ : true, __constructs__ : ["UTF8","RawNative"]
+	,UTF8: {_hx_index:0,__enum__:"haxe.io.Encoding",toString:$estr}
+	,RawNative: {_hx_index:1,__enum__:"haxe.io.Encoding",toString:$estr}
+};
 var haxe_io_Error = $hxEnums["haxe.io.Error"] = { __ename__ : true, __constructs__ : ["Blocked","Overflow","OutsideBounds","Custom"]
 	,Blocked: {_hx_index:0,__enum__:"haxe.io.Error",toString:$estr}
 	,Overflow: {_hx_index:1,__enum__:"haxe.io.Error",toString:$estr}
@@ -5630,7 +5544,6 @@ pages_RegisterPage.prototype = $extend(com_vige_core_DynamicComponent.prototype,
 	,__class__: pages_RegisterPage
 });
 function $getIterator(o) { if( o instanceof Array ) return HxOverrides.iter(o); else return o.iterator(); }
-haxe_Resource.content = [{ name : "url", data : "aHR0cDovL2xvY2FsaG9zdDozMDAwCg"}];
 if( String.fromCodePoint == null ) String.fromCodePoint = function(c) { return c < 0x10000 ? String.fromCharCode(c) : String.fromCharCode((c>>10)+0xD7C0)+String.fromCharCode((c&0x3FF)+0xDC00); }
 String.prototype.__class__ = String;
 String.__name__ = "String";
@@ -5648,15 +5561,13 @@ Object.defineProperty(js__$Boot_HaxeError.prototype,"message",{ get : function()
 	return String(this.val);
 }});
 js_Boot.__toStr = ({ }).toString;
-haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-haxe_crypto_Base64.BYTES = haxe_io_Bytes.ofString(haxe_crypto_Base64.CHARS);
-Config.API_AUTH = haxe_Resource.getString("url") + "/api/auth";
-Config.API_REGISTER = haxe_Resource.getString("url") + "/api/register";
-Config.API_LOGIN = haxe_Resource.getString("url") + "/api/login";
-Config.API_RECIPE_GET = haxe_Resource.getString("url") + "/api/recipe/";
-Config.API_RECIPE_DELETE = haxe_Resource.getString("url") + "/api/recipe/";
-Config.API_RECIPE = haxe_Resource.getString("url") + "/api/recipes/";
-Config.API_RECIP_POST = haxe_Resource.getString("url") + "/api/recipe";
+Config.API_AUTH = "https://oppschrifter.herokuapp.com/api/auth";
+Config.API_REGISTER = "https://oppschrifter.herokuapp.com/api/register";
+Config.API_LOGIN = " https://oppschrifter.herokuapp.com/api/login";
+Config.API_RECIPE_GET = "https://oppschrifter.herokuapp.com/api/recipe/";
+Config.API_RECIPE_DELETE = "https://oppschrifter.herokuapp.com/api/recipe/";
+Config.API_RECIPE = "https://oppschrifter.herokuapp.com/api/recipes/";
+Config.API_RECIP_POST = "https://oppschrifter.herokuapp.com/api/recipe";
 Xml.Element = 0;
 Xml.PCData = 1;
 Xml.CData = 2;
