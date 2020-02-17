@@ -4,5 +4,5 @@ git add .
 git commit -m "$*"
 git push
 git push heroku master
-echo "http://localhost:3000" > 'env.conf'
+#echo "http://localhost:3000" > 'env.conf'
 
