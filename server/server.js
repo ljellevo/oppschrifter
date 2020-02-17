@@ -11,9 +11,9 @@ app.use(cors())
 app.use(express.json());
 app.use(express.static('bin'));
 app.use(bodyParser.urlencoded({ extended: true }));
-if(process.env.PORT ) {
-  app.use(enforce.HTTPS({ trustProtoHeader: true }))
-}
+app.use(enforce.HTTPS({ trustProtoHeader: true }))
+
+
 
 
 const api = require("./api")(app);  
