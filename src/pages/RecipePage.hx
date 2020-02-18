@@ -86,9 +86,6 @@ class RecipePage extends DynamicComponent {
               maxWidth: "450px",
             }),
             children: [
-              new Text("Link til oppskrift", {
-                color: new Color({color: Colors.fromString("#A4A4A4")})
-              }),
               new Action({
                 onClick: function() {
                   Navigate.link({url: data.getUrl()});
@@ -108,7 +105,7 @@ class RecipePage extends DynamicComponent {
                   child: new Row({
                     flex: true,
                     children: [
-                      new Text("godt.no", {
+                      new Text("Til oppskrift", {
                         color: new Color({color: Colors.fromString("#2e3440")}),
                         textSize: 20
                       }),
@@ -132,14 +129,17 @@ class RecipePage extends DynamicComponent {
       child: new Column({
         children: [
           new Text("Ingredienser", {
-            color: new Color({color: Colors.fromString("#A4A4A4")})
+            color: new Color({color: Colors.fromString("#A4A4A4")}),
+            textSize: 12
           }),
           new Column({
             children: Constructors.constructRows({
               data: data.getIngredients(),
               elementsInEachRow: 1,
               elementBuilder: function(i) {
-                return new Text(" - " + data.getIngredients()[i] + " " + data.getAmounts()[i]);
+                return new Text(" - " + data.getIngredients()[i] + " " + data.getAmounts()[i], {
+                  textSize: 12
+                });
               },
               rowBuilder: function(children) {
                 return new Row({children: children});
@@ -150,14 +150,17 @@ class RecipePage extends DynamicComponent {
             size: new Size({height: "30px"})
           }),
           new Text("Fremgangsmåte", {
-            color: new Color({color: Colors.fromString("#A4A4A4")})
+            color: new Color({color: Colors.fromString("#A4A4A4")}),
+            textSize: 12
           }),
           new Column({
             children: Constructors.constructRows({
               data: data.getSteps(),
               elementsInEachRow: 1,
               elementBuilder: function(i) {
-                return new Text(Std.string(i + 1) + ". " + data.getSteps()[i]);
+                return new Text(Std.string(i + 1) + ". " + data.getSteps()[i], {
+                  textSize: 12
+                });
               },
               rowBuilder: function(children) {
                 return new Row({children: children});
@@ -202,7 +205,7 @@ class RecipePage extends DynamicComponent {
                         alignment: CenterAlignment.Both,
                         child: new Text(
                           data.getName() != null ? data.getName() : "", {
-                            textSize: 40, 
+                            textSize: 20, 
                             font: new Fonts("Poppins", "sans-serif"),
                             fontWeight: FontWeight.W900,
                             color: new Color({color: Colors.fromString("#2e3440")}),
@@ -218,13 +221,16 @@ class RecipePage extends DynamicComponent {
                           crossAxisAlignment: CrossAxisAlignment.SpacedEvenly,
                           children: [
                             new Text(data.getCategory(), {
-                              color: new Color({color: Colors.fromString("#A4A4A4")})
+                              color: new Color({color: Colors.fromString("#A4A4A4")}),
+                              textSize: 12
                             }),
                             new Text(Std.string(data.getViewed() + " visninger"), {
-                              color: new Color({color: Colors.fromString("#A4A4A4")})
+                              color: new Color({color: Colors.fromString("#A4A4A4")}),
+                              textSize: 12
                             }),
                             new Text(DateConverter.convertTimestampToString(data.getUploaded()), {
-                              color: new Color({color: Colors.fromString("#A4A4A4")})
+                              color: new Color({color: Colors.fromString("#A4A4A4")}),
+                              textSize: 12
                             })
 
                           ]
@@ -249,7 +255,8 @@ class RecipePage extends DynamicComponent {
                 margin: Margin.fromTRBL(30, 0, 0, 0),
                 child:  new Text(data.getTags(), {
                   color: new Color({color: Colors.fromString("#A4A4A4")}),
-                  textAlignment: TextAlign.Center
+                  textAlignment: TextAlign.Center,
+                  textSize: 12
                 })
               })
             }),
