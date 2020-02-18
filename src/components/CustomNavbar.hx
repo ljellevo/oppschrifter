@@ -139,6 +139,7 @@ new Row({
     var navbar = new Navbar({
       position: NavbarPosition.Top,
       offset: 0,
+      
       color: new Color({backgroundColor: "#fafafa"}),
       child: new Column({
         children: [
@@ -154,20 +155,20 @@ new Row({
             color: new Color({backgroundColor: Colors.BLUE}),
             size: new Size({width: "100%", height: "20px"})
           }),
-
-
-
-new Row({
-      mainAxisAlignment: MainAxisAlignment.Center,
-      crossAxisAlignment: CrossAxisAlignment.SpacedEvenly,
-      margin: Margin.fromTRBL(10, 0, 10, 0),
-      children: [
-        homepageButton("Oversikt", null, "/"),
-        homepageButton("Ny", null, "/add"),
-        homepageButton("Feedback", null, "/feedback"),
-        logoutButton("Logg ut", null, "/logout")
-      ],
-    }),
+          new Row({
+            shadow: [
+              new Shadow({horizontal: "0", vertical: "8px", blur: "6px", spread: "-6px",  color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})}),
+            ],
+            mainAxisAlignment: MainAxisAlignment.Center,
+            crossAxisAlignment: CrossAxisAlignment.SpacedEvenly,
+            margin: Margin.fromTRBL(10, 0, 10, 0),
+            children: [
+              homepageButton("Oversikt", null, "/"),
+              homepageButton("Ny", null, "/add"),
+              homepageButton("Feedback", null, "/feedback"),
+              logoutButton("Logg ut", null, "/logout")
+            ],
+          }),
         ]
       }),
       onComplete: function (){}
