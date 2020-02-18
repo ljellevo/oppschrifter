@@ -9,7 +9,6 @@ class Config {
   public static final API_RECIPE_DELETE: String = "/api/recipe/";
   public static final API_RECIPE: String = "/api/recipes/";
   public static final API_RECIP_POST: String =  "/api/recipe";
-  //http://localhost:3000/api/register
 
 
   /*
