@@ -178,11 +178,13 @@ class HomePage extends DynamicComponent {
                               children: [
                                 new Text(data[iterator].getName(), {
                                   color: new Color({color: Colors.fromString("#2e3440")}),
-                                  textSize: 20
+                                  textSize: 18
                                 }),
                                 new Container({
                                   //child: new Text(Std.string(data[iterator].getUploaded())),
-                                  child: new Text(DateConverter.convertTimestampToString(data[iterator].getUploaded()), {textAlignment: TextAlign.Right}),
+                                  child: new Text(DateConverter.convertTimestampToString(data[iterator].getUploaded()), {textAlignment: TextAlign.Right,
+                                    textSize: 18
+                                  }),
                                   size: new Size({width: "110px"})
                                 })
                               ],
@@ -191,13 +193,21 @@ class HomePage extends DynamicComponent {
                               crossAxisAlignment: CrossAxisAlignment.SpaceBetween,
                               equalElementWidth: false
                             }),
+                            /*
                             new Container({
                               color: new Color({backgroundColor: Colors.fromString("#2e3440")}),
                               size: new Size({height: "2px"})
                             }),
-                            new Text(data[iterator].getTags(), {
-                              color: new Color({color: Colors.fromString("#A4A4A4")})
+                            
+                            new Container({
+                              size: new Size({height: "2px"})
+                            }),
+                            */
+                            new Text(data[iterator].getCategory(), {
+                              color: new Color({color: Colors.fromString("#A4A4A4")}),
+                              textSize: 12
                             })
+                            
                           ],
                         })
                       })
