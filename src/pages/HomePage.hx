@@ -181,7 +181,6 @@ class HomePage extends DynamicComponent {
                                   textSize: 18
                                 }),
                                 new Container({
-                                  //child: new Text(Std.string(data[iterator].getUploaded())),
                                   child: new Text(DateConverter.convertTimestampToString(data[iterator].getUploaded()), {textAlignment: TextAlign.Right,
                                     textSize: 18
                                   }),
@@ -193,16 +192,6 @@ class HomePage extends DynamicComponent {
                               crossAxisAlignment: CrossAxisAlignment.SpaceBetween,
                               equalElementWidth: false
                             }),
-                            /*
-                            new Container({
-                              color: new Color({backgroundColor: Colors.fromString("#2e3440")}),
-                              size: new Size({height: "2px"})
-                            }),
-                            
-                            new Container({
-                              size: new Size({height: "2px"})
-                            }),
-                            */
                             new Text(data[iterator].getCategory(), {
                               color: new Color({color: Colors.fromString("#A4A4A4")}),
                               textSize: 12
