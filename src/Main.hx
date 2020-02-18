@@ -42,7 +42,7 @@ class Main {
   
         ];
     
-        Navigate.to({url: Browser.location.pathname, main: true});
+        Navigate.to(null, {url: Browser.location.pathname, main: true});
     
         Browser.window.addEventListener('popstate', function(e) {
           Navigate.navigationEvent();
@@ -55,7 +55,7 @@ class Main {
           new RegisterPage()
         ];
     
-        Navigate.to({url: Browser.location.pathname, main: true});
+        Navigate.to(null, {url: Browser.location.pathname, main: true});
     
         Browser.window.addEventListener('popstate', function(e) {
           Navigate.navigationEvent();

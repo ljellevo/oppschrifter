@@ -159,7 +159,7 @@ class HomePage extends DynamicComponent {
                   elementBuilder: function(iterator) {
                     return new Action({
                       onClick: function() {
-                        Navigate.to({url: "/recipe/" + data[iterator].getId()});
+                        Navigate.to(this, {url: "/recipe/" + data[iterator].getId()});
                       },
                       child: new Container({
                         color: new Color({backgroundColor: Colors.fromString("#fafafa")}),
@@ -182,7 +182,7 @@ class HomePage extends DynamicComponent {
                                 }),
                                 new Container({
                                   child: new Text(DateConverter.convertTimestampToString(data[iterator].getUploaded()), {textAlignment: TextAlign.Right,
-                                    textSize: 18
+                                    textSize: 12
                                   }),
                                   size: new Size({width: "110px"})
                                 })

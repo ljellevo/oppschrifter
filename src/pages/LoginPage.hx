@@ -54,7 +54,7 @@ class LoginPage extends DynamicComponent {
     request(usernameInputController.getValue(), passwordInputController.getValue(), function(response){
       trace("Got the response via callback", response);
       Cookie.set("credentials", response, 315569260);
-      Navigate.to({url: "/"});
+      Navigate.to(this, {url: "/"});
       Browser.location.reload();
     });
   }
@@ -151,7 +151,7 @@ class LoginPage extends DynamicComponent {
                             child: new Text("Register"),
                             onClick: function() {
                               trace("Logg inn was clicked");
-                              Navigate.to({url: "/register"});
+                              Navigate.to(this, {url: "/register"});
                             }
                           })
                         }),

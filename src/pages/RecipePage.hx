@@ -29,6 +29,15 @@ class RecipePage extends DynamicComponent {
     getRecipe();
   }
 
+  override public function unload() {
+    trace("unloaded");
+    page = new Page({
+      route: "/recipe/:id",
+      child: new Container({})
+    });
+    this.component();
+  }
+
   function getRecipe(){
     new SingleRequest({
       url: Config.API_RECIPE_GET + Navigate.getParameters()[0],
@@ -65,7 +74,7 @@ class RecipePage extends DynamicComponent {
       url: Config.API_RECIPE_DELETE + Navigate.getParameters()[0] + "/delete",
       method: "GET",
       onComplete: function(res: HttpResponse) {
-        Navigate.to({url: "/", hardRefresh: true});
+        Navigate.to(this, {url: "/", hardRefresh: true});
       },
       onProgress: function() {
       },
@@ -93,20 +102,23 @@ class RecipePage extends DynamicComponent {
                 child: new Container({
                   color: new Color({backgroundColor: Colors.fromString("#fafafa")}),
                   //margin: Margin.fromTRBL(0, 0, 20, 0),
+                  /*
                   size: new Size({
                     width: "100%",
                     //maxWidth: "450px",
                   }),
+                  */
                   shadow: [
                     new Shadow({horizontal: "0px", vertical: "4px", blur: "6px", color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})}),
                     new Shadow({horizontal: "0px", vertical: "0px", blur: "2px", color: new Color({backgroundColor: Colors.fromString("#CDCDCD")})})
                   ],
                   padding: Padding.all(20),
                   child: new Row({
-                    flex: true,
+                    //flex: true,
                     children: [
-                      new Text("Til oppskrift", {
+                      new Text("KLIKK HER", {
                         color: new Color({color: Colors.fromString("#2e3440")}),
+                        textAlignment: TextAlign.Center,
                         textSize: 20
                       }),
                     ]

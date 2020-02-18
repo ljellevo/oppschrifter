@@ -64,7 +64,7 @@ class AddPage extends DynamicComponent {
     }
 
     testFunc(newRecipe.toJSON(), function(response){
-      Navigate.to({url: "/", hardRefresh: true});
+      Navigate.to(this, {url: "/", hardRefresh: true});
     });
   }
 

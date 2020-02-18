@@ -178,7 +178,7 @@ class RegisterPage extends DynamicComponent {
                             child: new Text("Allerede bruker?"),
                             onClick: function() {
                               trace("Logg inn was clicked");
-                              Navigate.to({url: "/login"});
+                              Navigate.to(this, {url: "/login"});
                             }
                           })
                         }),
