@@ -18,9 +18,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const api = require("./api")(app);  
 
+/*
 if(process.env.PORT) {
   app.use(sslRedirect())
 }
+*/
 
 
 /*
