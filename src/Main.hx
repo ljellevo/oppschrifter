@@ -26,9 +26,7 @@ class Main {
       }
   
       request(function(response){
-        trace("Got the response via callback", response);
-          callback(response);
-        
+        callback(response);
       });
     }
 
@@ -62,10 +60,10 @@ class Main {
         });
         body.init();
       }
-      
     });
-    
-   
   }
 }
+
+
+
 
