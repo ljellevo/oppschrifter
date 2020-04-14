@@ -14,7 +14,6 @@ class Main {
     body.setGlobalTitle("OPPSCHRIFTER");
 
     function auth(callback:String->Void){
-      var object:Dynamic;
       var req = new Http(Config.API_AUTH);
   
       function request(callback:String->Void):Void  {
