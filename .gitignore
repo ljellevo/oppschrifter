@@ -1,2 +1,4 @@
 /node_modules/
 package-lock.json
+server/database_config.json
+server/jwt_secret.json
