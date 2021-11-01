@@ -205,6 +205,7 @@ class RecipePage extends DynamicComponent {
                 ],
                 color: new Color({backgroundColor: Colors.fromString("#fafafa")}),
                 size: new Size({
+                  
                   width: "75%",
                   maxWidth: "450px",
                 }),

@@ -51,7 +51,7 @@ class CustomNavbar extends DynamicComponent {
         mainAxisAlignment: MainAxisAlignment.Center,
         children: getButtonContents(text, src)
       }), 
-      isLink: false,
+      //isLink: false,
       onClick: function (e) {
         if(url == "https://github.com/ljellevo/mist.io") {
           Navigate.link({url: url});
@@ -97,7 +97,7 @@ class CustomNavbar extends DynamicComponent {
         mainAxisAlignment: MainAxisAlignment.Center,
         children: getButtonContents(text, src)
       }), 
-      isLink: false,
+      //isLink: false,
       onClick: function (e) {
         Cookie.remove("credentials");
         Browser.location.reload();
