@@ -1,6 +1,6 @@
 # oppschrifter
 Easy recipe organizing
 
-Dessverre så ble nøklene offentliggjort når dette repoet ble satt til offentlig, men heldigvis er det ikke noe big deal at det forblir offentlig en liten periode også vil jeg endre nøklene etterhvert.
+Nøklene som kom med ved offentliggjøring av dette repoet har blitt endret og er nå utgåtte.
 
-Denne nettsiden bruker mitt hjemmelagde web-rammeverk (dog en gammel versjon)
+Denne nettsiden anvender mitt hjemmelagde web-rammeverk (dog en gammel versjon). Se https://github.com/ljellevo/vige
